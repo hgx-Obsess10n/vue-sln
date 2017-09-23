@@ -1,0 +1,39 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	text-decoration: none;
+	user-select: none;
+}
+body{
+	min-width: 1440px;
+}
+a:hover, a:visited, a:link, a:active {
+	color:#6d10e7;
+	text-decoration-style: none;
+	outline: none;
+}
+
+.div-max-c{
+	width: 1200px;
+	margin: 20px auto 0 auto;
+}
+.dis-blk{
+	display: block;
+}
+.clearFix:after{
+	content: '';
+	display: block;
+	clear: both;
+	height: 0;
+	visibility: hidden;
+}
+.div-cover{
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+    background-color: #000;
+    opacity: 0.5;
+}
