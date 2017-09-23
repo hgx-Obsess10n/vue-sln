@@ -23,17 +23,6 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser;
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable;
 
-var app = express();
-//api-list
-var apiRoutes = express.Router();
-apiRoutes.get("/index-cards", function(req, res) {
-    res.json({
-        status: 200,
-        data: require("../src/assets/json/index-card.json")
-    });
-});
-app.use("/api", apiRoutes);
-
 var compiler = webpack(webpackConfig);
 
 var devMiddleware = require("webpack-dev-middleware")(compiler, {

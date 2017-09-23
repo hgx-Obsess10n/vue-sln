@@ -37,10 +37,11 @@ export default {
     methods: {
         getCards: function() {
             var _this = this;
-            this.$http.get('/api/index-cards')
+            this.$http.get('static/json/index-card.json')
                 .then(res => {
+                    console.log('res',res);
                     if (res.status == 200) {
-                        _this.cards = res.data.data.list;
+                        _this.cards = res.data.list;
                     }
                 });
         }
