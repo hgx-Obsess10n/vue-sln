@@ -1,5 +1,5 @@
 <template>
-  
+  <div>This is Li</div>
 </template>
 <script>
     export default {

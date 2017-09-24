@@ -6,7 +6,8 @@
 	user-select: none;
 }
 body{
-	min-width: 1440px;
+	width:100%;
+	height: 100%;
 }
 a:hover, a:visited, a:link, a:active {
 	color:#6d10e7;
@@ -16,8 +17,26 @@ a:hover, a:visited, a:link, a:active {
 
 .div-max-c{
 	width: 1200px;
+    padding-left:20px;
 	margin: 20px auto 0 auto;
 }
+	@media (max-width:1200px){
+		.div-max-c{
+			width: 960px;
+		}
+	}
+	@media (max-width:1200px){
+		.div-max-c{
+			width: 960px;
+		}
+	}
+	@media (max-width:960px){
+		.div-max-c{
+			width: 100%;
+		}
+	}
+
+
 .dis-blk{
 	display: block;
 }

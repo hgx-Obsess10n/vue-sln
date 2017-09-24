@@ -1,7 +1,7 @@
 <template>
 	<div id="app" class="app">
 		<router-link to="/">
-			<img src="./assets/img/title/title.png">
+			<img class="img-title" src="./assets/img/title/title.png">
 		</router-link>
 		<div class="div-max-c clearFix">
 			<router-link class="rt" to="/Song">
@@ -14,21 +14,23 @@
 				<span v-bind:class="curRouter=='#/Na'?'span-active':''">N</span>
 			</router-link>
 		</div>
-		<router-view class="div-max-c" v-on:comInit="changeRouter"></router-view>
+		<transition name="router-change">
+			<router-view class="div-max-c" v-on:comInit="changeRouter"></router-view>
+		</transition>
 	</div>
 </template>
 
 <script>
 export default {
 	name: 'app',
-	data(){
-		return{
-			curRouter:window.location.pathname
+	data() {
+		return {
+			curRouter: window.location.pathname
 		}
 	},
-	methods:{
-		changeRouter:function(e){
-			this.curRouter=e;
+	methods: {
+		changeRouter: function(e) {
+			this.curRouter = e;
 		}
 	}
 }
@@ -43,29 +45,53 @@ export default {
 	color: #2c3e50;
 	margin-top: 40px;
 }
-.rt{
+
+@media (max-width:500px) {
+	.img-title {
+		width: 100%;
+	}
+}
+
+.rt {
 	display: block;
 	float: left;
-	width:400px;
+	width: 33%;
 	height: 40px;
 }
-.rt span{
+
+.rt span {
 	font-weight: 800;
 	font-size: 30px;
 }
-.span-active{
+
+.span-active {
 	display: block;
 	animation: span-anim 2.5s infinite;
 }
+
 @keyframes span-anim {
-	 0%,100% {
-       transform: rotate(30deg);
-       transform-origin: top center;
-    }
-    50% {
-       transform: rotate(-30deg);
-       transform-origin: top center;
-    }
+	0%,
+	100% {
+		transform: rotate(30deg);
+		transform-origin: top center;
+	}
+	50% {
+		transform: rotate(-30deg);
+		transform-origin: top center;
+	}
+}
+
+.router-change-enter-active {
+	animation: come .3s;
+}
+
+@keyframes come {
+	0% {
+		transform: translateX(100%);
+	}
+	100% {
+		transform: translateX(0);
+	}
 }
 </style>
 
