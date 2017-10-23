@@ -1,22 +1,30 @@
 
 <template>
-    <div id="indexCard" class="clearFix">
-        <div @click="hoverIndex=index" class="div-card" v-for="(item,index) in cards" :key="index">
-            <div class="div-card-header" v-if="item.header&&item.header.length>0">{{item.header}}</div>
-            <div class="div-card-body" >{{item.body}}</div>
-            <div class="div-card-footer" v-if="item.footer&&item.footer.length>0">{{item.footer}}</div>
+    <div>
+        <div class="clearFix routerCloseBanner">
+            <router-link class="routerClose" to="/">X</router-link>
         </div>
-        <transition name="hover-anim">
-            <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-cover"></div>
-        </transition>
-        <transition name="hover-anim1">
-            <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-card-hover">
-                <div class="div-card-header" v-if="cards[hoverIndex].header&&cards[hoverIndex].header.length>0">{{cards[hoverIndex].header}}</div>
-                <div class="div-card-body-hover" >{{cards[hoverIndex].body}}</div>
-                <div class="div-card-footer" v-if="cards[hoverIndex].footer&&cards[hoverIndex].footer.length>0">{{cards[hoverIndex].footer}}</div>
+        <div id="indexCard" class="clearFix div-card-content">
+            <div @click="hoverIndex=index" class="div-card" v-for="(item,index) in cards" :key="index">
+                <div class="div-card-header" v-if="item.header&&item.header.length>0">{{item.header}}</div>
+                <div class="div-card-body">{{item.body}}</div>
+                <div class="div-card-footer" v-if="item.footer&&item.footer.length>0">{{item.footer}}</div>
             </div>
-        </transition>
+            <transition name="hover-anim">
+                <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-cover"></div>
+            </transition>
+            <transition name="hover-anim1">
+                <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-card-hover">
+                    <div class="div-card-header" v-if="cards[hoverIndex].header&&cards[hoverIndex].header.length>0">{{cards[hoverIndex].header}}</div>
+                    <div class="div-card-body-container">
+                        <div class="div-card-body-hover">{{cards[hoverIndex].body}}</div>
+                    </div>
+                    <div class="div-card-footer" v-if="cards[hoverIndex].footer&&cards[hoverIndex].footer.length>0">{{cards[hoverIndex].footer}}</div>
+                </div>
+            </transition>
+        </div>
     </div>
+    
 </template>
 
 <script>
@@ -28,18 +36,18 @@ export default {
         _this.getCards();
         return {
             cards: cards,
-            hoverIndex:-1
+            hoverIndex: -1
         };
     },
-    created(){
-        this.$emit('comInit',window.location.hash)
+    created() {
+        this.$emit('comInit', window.location.hash)
     },
     methods: {
         getCards: function() {
             var _this = this;
             this.$http.get('static/json/index-card.json')
                 .then(res => {
-                    console.log('res',res);
+                    console.log('res', res);
                     if (res.status == 200) {
                         _this.cards = res.data.list;
                     }
@@ -51,6 +59,9 @@ export default {
 </script>
 
 <style scoped>
+.div-card-content{
+    padding-left:20px;
+}
 .div-card-header {
     margin-bottom: 10px;
     font-size: 18px;
@@ -87,13 +98,18 @@ export default {
     margin: 0 auto;
     left: 0;
     right: 0;
-    top:50%; 
-    transform:translateY(-50%); 
+    top: 50%;
+    transform: translateY(-50%);
     background-color: white;
     z-index: 1;
     border-radius: 20px;
-    max-width: max-content;
-    opacity: 1;
+    width: max-content;
+    max-width: 80%;
+    max-height: 90%;
+    opacity: 100;
+}
+.div-card-body-container{
+    overflow-y:scroll;
 }
 
 .div-card-body {
@@ -104,55 +120,57 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.div-card-body-hover{
+
+.div-card-body-hover {
     white-space: pre-line;
+    word-break: break-all;
     line-height: 26px;
     text-align: left;
 }
 
 .hover-anim-leave-active {
-  animation: hover-anim .3s reverse;
+    animation: hover-anim .3s reverse;
 }
+
 @keyframes hover-anim {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.25;
-  }
-  100% {
-    opacity: 0.5;
-  }
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.25;
+    }
+    100% {
+        opacity: 0.5;
+    }
 }
 
 .hover-anim1-enter-active {
-  animation: hover-anim1 .3s;
+    animation: hover-anim1 .3s;
 }
+
 .hover-anim1-leave-active {
-  animation: hover-anim1 .3s reverse;
+    animation: hover-anim1 .3s reverse;
 }
+
 @keyframes hover-anim1 {
-  0% {
-    opacity: 0;
-  }
-  20%{
-    opacity: 0.2;
-  }
-  40%{
-    opacity: 0.4;
-  }
-  60%{
-    opacity: 0.6;
-  }
-  80%{
-    opacity: 0.8;
-  }
-  100%{
-    opacity: 1;
-  }
-    
+    0% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.2;
+    }
+    40% {
+        opacity: 0.4;
+    }
+    60% {
+        opacity: 0.6;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 1;
+    }
 }
-
-
 </style>
 
