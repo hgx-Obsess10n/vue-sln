@@ -1,29 +1,26 @@
 
 <template>
-    <div>
-        <div class="clearFix routerCloseBanner">
-            <router-link class="routerClose" to="/">X</router-link>
+    
+    <div id="indexCard" class="clearFix div-card-content">
+        <div @click="hoverIndex=index" class="div-card" v-for="(item,index) in cards" :key="index">
+            <div class="div-card-header" v-if="item.header&&item.header.length>0">{{item.header}}</div>
+            <div class="div-card-body">{{item.body}}</div>
+            <div class="div-card-footer" v-if="item.footer&&item.footer.length>0">{{item.footer}}</div>
         </div>
-        <div id="indexCard" class="clearFix div-card-content">
-            <div @click="hoverIndex=index" class="div-card" v-for="(item,index) in cards" :key="index">
-                <div class="div-card-header" v-if="item.header&&item.header.length>0">{{item.header}}</div>
-                <div class="div-card-body">{{item.body}}</div>
-                <div class="div-card-footer" v-if="item.footer&&item.footer.length>0">{{item.footer}}</div>
-            </div>
-            <transition name="hover-anim">
-                <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-cover"></div>
-            </transition>
-            <transition name="hover-anim1">
-                <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-card-hover">
-                    <div class="div-card-header" v-if="cards[hoverIndex].header&&cards[hoverIndex].header.length>0">{{cards[hoverIndex].header}}</div>
-                    <div class="div-card-body-container">
-                        <div class="div-card-body-hover">{{cards[hoverIndex].body}}</div>
-                    </div>
-                    <div class="div-card-footer" v-if="cards[hoverIndex].footer&&cards[hoverIndex].footer.length>0">{{cards[hoverIndex].footer}}</div>
+        <transition name="hover-anim">
+            <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-cover"></div>
+        </transition>
+        <transition name="hover-anim1">
+            <div @click="hoverIndex=-1" v-if="hoverIndex!=-1" class="div-card-hover">
+                <div class="div-card-header" v-if="cards[hoverIndex].header&&cards[hoverIndex].header.length>0">{{cards[hoverIndex].header}}</div>
+                <div class="div-card-body-container">
+                    <div class="div-card-body-hover">{{cards[hoverIndex].body}}</div>
                 </div>
-            </transition>
-        </div>
+                <div class="div-card-footer" v-if="cards[hoverIndex].footer&&cards[hoverIndex].footer.length>0">{{cards[hoverIndex].footer}}</div>
+            </div>
+        </transition>
     </div>
+    
     
 </template>
 

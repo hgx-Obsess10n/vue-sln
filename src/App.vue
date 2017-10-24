@@ -23,15 +23,20 @@
 	<div id="app" class="app"
 		v-on:click="$_triggerMenuShow(false)" >
 
-		<!--功能页 Start-->
+		<!--功能页容器 Start-->
         <transition name="router-change">
-			<router-view class="div-Func-item-box"
-				v-show="comShow" 
-				v-on:comInit="$_changeRouter" 
-				v-on:comClose="$_closeRouter">
-			</router-view>
+			<div class="div-Func-item-box"
+				v-show="comShow" >
+				<div class="clearFix routerCloseBanner">
+					<router-link class="routerClose" to="/"
+						v-on:click.native="$_closeRouter">X</router-link>
+				</div>
+				<router-view 
+					v-on:comInit="$_changeRouter"> 
+				</router-view>
+			</div>
 		</transition>
-        <!--功能页 End-->
+        <!--功能页容器 End-->
 
 		<!--菜单 Start-->
 		<div class="Menu"
@@ -40,6 +45,11 @@
 				<li>
 					<router-link to="/Index" class="clearFix">
 						<img src="" alt="Index"><span>Index</span>
+					</router-link>
+				</li>
+				<li>
+					<router-link to="/Li" class="clearFix">
+						<img src="" alt="Li"><span>Li</span>
 					</router-link>
 				</li>
 			</ul>
@@ -79,7 +89,7 @@ export default {
 		$_changeRouter: function(e) {
 			this.curRouter = e;
 			this.comShow=true;
-			this.$_triggerMenuShow();
+			this.$_triggerMenuShow(false);
 		},
 		$_closeRouter:function(){
 			this.curRouter=null;
@@ -124,7 +134,6 @@ export default {
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
-	/*margin-top: 40px;*/
 	position: absolute;
 	top:0;
 	bottom:0;
@@ -138,10 +147,10 @@ export default {
 	
 .div-Func-item-box{
 	position: fixed;
-	top:20px;
-	bottom: 50px;
-	left: 20px;
-	right: 20px;
+	top: 30px;
+    bottom: 100px;
+    left: 50px;
+    right: 50px;
 	background-color: white;
 	opacity: 1;
 	overflow: hidden;
