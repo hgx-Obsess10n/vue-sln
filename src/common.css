@@ -64,18 +64,13 @@ a:hover, a:visited, a:link, a:active {
 .ul-nolist{
 	list-style: none;
 }
-.routerClose{
-	border-left: 1px solid #333;
-	float: right;
-	width: 40px;
-	height: 30px;
-	line-height: 30px;
-	color: black;
-    font-weight: 800;
+.h100{
+	height: 100%;
 }
-.routerCloseBanner{
-	background: #c3e3f6;
-	border-bottom: 1px solid #333;
-	margin-bottom:20px;
-	overflow: hidden;
+.w100{
+	width:100%;
+}
+.v-center{
+	margin-left: auto;
+	margin-right: auto;
 }

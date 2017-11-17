@@ -27,11 +27,11 @@
         <transition name="router-change">
 			<div class="div-Func-item-box"
 				v-show="comShow" >
-				<div class="clearFix routerCloseBanner">
+				<div class="clearFix routerCloseBanner w100">
 					<router-link class="routerClose" to="/"
 						v-on:click.native="$_closeRouter">X</router-link>
 				</div>
-				<router-view 
+				<router-view class="routerView w100 h100"
 					v-on:comInit="$_changeRouter"> 
 				</router-view>
 			</div>
@@ -42,14 +42,14 @@
 		<div class="Menu"
 			v-show="menuShow">
 			<ul class="ul-Menu">
-				<li>
+				<!--<li>
 					<router-link to="/Index" class="clearFix">
 						<img src="" alt="Index"><span>Index</span>
 					</router-link>
-				</li>
+				</li>-->
 				<li>
 					<router-link to="/Li" class="clearFix">
-						<img src="" alt="Li"><span>Li</span>
+						<img src="" alt="Li"><span>图片处理</span>
 					</router-link>
 				</li>
 			</ul>
@@ -60,7 +60,7 @@
         <div class="Toolbar-bottom">
             <ul class="ul-Bottom ul-menu">
                 <li v-on:click.stop="$_triggerMenuShow">菜单</li>
-                <li>Index</li>
+            <!--<li>Index</li>-->
             </ul>
             <ul class="ul-Bottom ul-time">
                 <li>{{curTime}}</li>
@@ -155,6 +155,30 @@ export default {
 	opacity: 1;
 	overflow: hidden;
 }
+
+
+
+.routerClose{
+	border-left: 1px solid #333;
+	float: right;
+	width: 40px;
+	height: 30px;
+	line-height: 30px;
+	color: black;
+	font-weight: 800;
+}
+.routerCloseBanner{
+	position: absolute;
+	background: #c3e3f6;
+	border-bottom: 1px solid #333;
+	overflow: hidden;
+    z-index: 1;
+}
+.routerView{
+	position: absolute;
+	padding-top:31px;
+}
+
 .router-change-enter-active {
 	animation: come .6s;
 }
