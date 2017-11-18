@@ -13,7 +13,10 @@
             divScroll
         },
         created(){
-            this.$emit('comInit',window.location.hash)
+            let data={
+                url:window.location.hash
+            };
+            this.$emit('CompInit',data )
         }
     }
     

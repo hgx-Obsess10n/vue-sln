@@ -5,13 +5,14 @@
 		<!--功能页容器 Start-->
         <transition name="router-change">
 			<div class="div-Func-item-box"
-				v-show="comShow" >
+				v-show="compShow" >
 				<div class="clearFix routerCloseBanner w100">
+					<span class="compTitle">{{compTitle}}</span>
 					<router-link class="routerClose" to="/"
 						v-on:click.native="$_closeRouter">X</router-link>
 				</div>
 				<router-view class="routerView w100 h100"
-					v-on:comInit="$_changeRouter"> 
+					v-on:CompInit="$_RouterCompInit"> 
 				</router-view>
 			</div>
 		</transition>
@@ -60,19 +61,29 @@ export default {
 		return {
 			curRouter: window.location.pathname,
 			curTime:'',
-			comShow:false,
+			compShow:false,
+			compTitle:'',
 			menuShow:false
 		}
 	},
 	methods: {
-		$_changeRouter: function(e) {
-			this.curRouter = e;
-			this.comShow=true;
-			this.$_triggerMenuShow(false);
+		$_RouterCompInit: function(paras) {
+			if(paras){
+				if(paras.url){
+					this.curRouter = paras.url;
+					this.compShow=true;
+					this.$_triggerMenuShow(false);
+				}
+				this.compTitle=(paras.title!=undefined&&paras.title!=null)?paras.title:'';
+
+
+
+			}
+			
 		},
 		$_closeRouter:function(){
 			this.curRouter=null;
-			this.comShow=false;
+			this.compShow=false;
 		},
 		$_getTime:function(){
 			var _this=this;
@@ -152,6 +163,10 @@ export default {
 	border-bottom: 1px solid #333;
 	overflow: hidden;
     z-index: 1;
+}
+.compTitle{
+	line-height: 30px;
+    font-weight: 600;
 }
 .routerView{
 	position: absolute;

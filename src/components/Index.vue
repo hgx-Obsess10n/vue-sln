@@ -26,7 +26,7 @@
 
 <script>
 export default {
-    name: 'Index',
+    name: "Index",
     data() {
         let _this = this;
         let cards = [];
@@ -37,27 +37,28 @@ export default {
         };
     },
     created() {
-        this.$emit('comInit', window.location.hash)
+        let data = {
+            url: window.location.hash
+        };
+        this.$emit("CompInit", data);
     },
     methods: {
         getCards: function() {
             var _this = this;
-            this.$http.get('static/json/index-card.json')
-                .then(res => {
-                    console.log('res', res);
-                    if (res.status == 200) {
-                        _this.cards = res.data.list;
-                    }
-                });
+            this.$http.get("static/json/index-card.json").then(res => {
+                console.log("res", res);
+                if (res.status == 200) {
+                    _this.cards = res.data.list;
+                }
+            });
         }
     }
-}
-
+};
 </script>
 
 <style scoped>
-.div-card-content{
-    padding-left:20px;
+.div-card-content {
+    padding-left: 20px;
 }
 .div-card-header {
     margin-bottom: 10px;
@@ -105,8 +106,8 @@ export default {
     max-height: 90%;
     opacity: 100;
 }
-.div-card-body-container{
-    overflow-y:scroll;
+.div-card-body-container {
+    overflow-y: scroll;
 }
 
 .div-card-body {
@@ -126,7 +127,7 @@ export default {
 }
 
 .hover-anim-leave-active {
-    animation: hover-anim .3s reverse;
+    animation: hover-anim 0.3s reverse;
 }
 
 @keyframes hover-anim {
@@ -142,11 +143,11 @@ export default {
 }
 
 .hover-anim1-enter-active {
-    animation: hover-anim1 .3s;
+    animation: hover-anim1 0.3s;
 }
 
 .hover-anim1-leave-active {
-    animation: hover-anim1 .3s reverse;
+    animation: hover-anim1 0.3s reverse;
 }
 
 @keyframes hover-anim1 {
