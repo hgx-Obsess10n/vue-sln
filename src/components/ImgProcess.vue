@@ -10,6 +10,9 @@
              <li v-on:click="$_imgTranslate($_imgGray,{index:3})">灰度变换-移位算法</li>
              <li v-on:click="$_imgTranslate($_imgGray,{index:4})">灰度变换-平均值算法</li>
              <li v-on:click="$_imgTranslate($_imgReversal)">逆反处理</li>
+             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:0})">全取红色</li>
+             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:1})">全取绿色</li>
+             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:2})">全取蓝色</li>
           </ul>
       </div>
       <!--Image-->
@@ -21,7 +24,7 @@
 </template>
 <script>
     export default {
-        name: 'Li',
+        name: 'ImgProcess',
         created(){
             this.$emit('comInit',window.location.hash)
         },
@@ -106,8 +109,8 @@
                 {
                     var R = _img256.data[i]; //R(0-255)
                     var G = _img256.data[i+1]; //G(0-255)
-                    var B = _img256.data[i+2]; //G(0-255)
-                    var Alpha = _img256.data[i+3]; //Alpha(0-255)
+                    var B = _img256.data[i+2]; //B(0-255)
+                    //var Alpha = _img256.data[i+3]; //Alpha(0-255)
 
                     let gray=0;
                     if(!index||index==1){
@@ -129,7 +132,7 @@
                     _img256.data[i] = gray;
                     _img256.data[i+1] = gray; 
                     _img256.data[i+2] = gray; 
-                    _img256.data[i+3] = Alpha; 
+                    //_img256.data[i+3] = Alpha; 
                 }
                 return _img256;
             },
@@ -145,6 +148,21 @@
                     _img256.data[i+2] = 255-_img256.data[i+2]; 
                 }
                 return _img256;
+            },
+            $_imgSingleColor:function(paras){
+                var _this=this;
+                if(!paras.imgData)
+                    return null;
+                let _singleColor=!paras.singleColor||(paras.singleColor!=1&&paras.singleColor!=2)?0:paras.singleColor;
+                let _img256=paras.imgData;
+                for (var i=0;i<_img256.data.length;i+=4)
+                {
+                    _img256.data[i] = 255-_img256.data[i+_singleColor];
+                    _img256.data[i+1] = 255-_img256.data[i+_singleColor]; 
+                    _img256.data[i+2] = 255-_img256.data[i+_singleColor]; 
+                }
+                return _img256;
+
             }
             
         }

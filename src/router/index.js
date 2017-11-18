@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
 import Song from '@/components/Song'
-import Li from '@/components/Li'
+import ImgProcess from '@/components/ImgProcess'
 import Na from '@/components/Na'
 
 Vue.use(Router)
@@ -15,9 +15,9 @@ export default new Router({
       component:Song
     },
     {
-      path:'/Li',
-      name:'Li',
-      component:Li
+      path:'/ImgProcess',
+      name:'ImgProcess',
+      component:ImgProcess
     },
     {
       path:'/Na',

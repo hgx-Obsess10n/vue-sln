@@ -1,25 +1,4 @@
 <template>
-	<!--
-	<div id="app" class="app">
-		<router-link to="/">
-			<img class="img-title" src="./assets/img/title/title.png">
-		</router-link>
-		<div class="div-max-c clearFix">
-			<router-link class="rt" to="/Song">
-				<span v-bind:class="curRouter=='#/Song'?'span-active':''">S</span>
-			</router-link>
-			<router-link class="rt" to="/Li">
-				<span v-bind:class="curRouter=='#/Li'?'span-active':''">L</span>
-			</router-link>
-			<router-link class="rt" to="/Na">
-				<span v-bind:class="curRouter=='#/Na'?'span-active':''">N</span>
-			</router-link>
-		</div>
-		<transition name="router-change">
-			<router-view class="div-max-c" v-on:comInit="changeRouter"></router-view>
-		</transition>
-	</div>
-	-->
 	<div id="app" class="app"
 		v-on:click="$_triggerMenuShow(false)" >
 
@@ -48,8 +27,8 @@
 					</router-link>
 				</li>-->
 				<li>
-					<router-link to="/Li" class="clearFix">
-						<img src="" alt="Li"><span>图片处理</span>
+					<router-link to="/ImgProcess" class="clearFix">
+						<img src="" alt="ImgProcess"><span>图片处理</span>
 					</router-link>
 				</li>
 			</ul>
