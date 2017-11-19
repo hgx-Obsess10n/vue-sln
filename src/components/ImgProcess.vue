@@ -13,6 +13,9 @@
              <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:0})">全取红色</li>
              <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:1})">全取绿色</li>
              <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:2})">全取蓝色</li>
+             <li v-on:click="$_imgTranslate($_imgSmooth)">平滑处理</li>
+             <li v-on:click="$_imgTranslate($_imgNeon)">霓虹处理</li>
+             <li v-on:click="$_imgTranslate($_imgRelief)">浮雕处理</li>
           </ul>
       </div>
       <!--Image-->
@@ -91,6 +94,52 @@ export default {
                 if (typeof callback == "function") callback();
             };
         },
+        $_imgArrData2MatrixPixel: function(imgArrData) {
+            var _this = this;
+            let pixels = [];
+            let rowPixels = [];
+            for (let i = 0, rowIndex = 0; i < imgArrData.length; i += 4) {
+                if (i >= (rowIndex + 1) * _this.imgWidth * 4) {
+                    rowIndex += 1;
+                    pixels.push(rowPixels.slice(0));
+                    rowPixels.length = 0;
+                }
+                rowPixels.push({
+                    R: imgArrData[i],
+                    G: imgArrData[i + 1],
+                    B: imgArrData[i + 2],
+                    A: imgArrData[i + 3]
+                });
+            }
+            pixels.push(rowPixels.slice(0));
+            rowPixels.length = 0;
+            return pixels;
+        },
+        $_imgMatrixPixel2ArrData(matrixPixel,arrData) {
+            var _this = this;
+            let bNeedReturn = arrData==undefined;
+            let imgArrData = [];
+            let i=0;
+            matrixPixel.forEach(row => {
+                row.forEach(pixel => {
+                    if(bNeedReturn){
+                        imgArrData.push(pixel.R);
+                        imgArrData.push(pixel.G);
+                        imgArrData.push(pixel.B);
+                        imgArrData.push(pixel.A);
+                    }
+                    else{
+                        arrData[i]=pixel.R;
+                        arrData[i+1]=pixel.G;
+                        arrData[i+2]=pixel.B;
+                        arrData[i+3]=pixel.A;
+                        i+=4;
+                    }
+                });
+            });
+            if(bNeedReturn)
+                return imgArrData;
+        },
         $_imgTranslate: function(funcName, funcPara) {
             var _this = this;
             if (!_this.imgData || typeof funcName != "function") return;
@@ -104,7 +153,7 @@ export default {
                     _this.imgWidth,
                     _this.imgHeight
                 );
-                
+
                 funcPara.imgData = _img256;
                 _img256 = funcName(funcPara);
                 if (_img256) {
@@ -179,39 +228,94 @@ export default {
             }
             return _img256;
         },
-        $_imgArrData2MatrixPixel: function(imgArrData) {
+        $_imgSmooth: function(paras) {
             var _this = this;
-            let pixels = [];
-            let rowPixels = [];
-            for (let i = 0, rowIndex = 0; i < imgArrData.length; i += 4) {
-                if (i >= (rowIndex + 1) * _this.imgWidth * 4) {
-                    rowIndex += 1;
-                    pixels.push(rowPixels.slice(0));
-                    rowPixels.length = 0;
+            if (!paras.imgData) return null;
+            let _img256 = paras.imgData;
+            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let newMatrix=matrixPixel.slice(0);
+            let iRows = matrixPixel.length;
+            let iColumns = matrixPixel[0].length;
+            for (let i = 0; i < iRows; i++) {
+                for (let j = 0; j < iColumns; j++) {
+                    let pixel = matrixPixel[i][j];
+                    let tempPixel = { R: 0, G: 0, B: 0,A:0 };
+                    let count = 0;
+                    for (let ii = i - 1; ii <= i + 1; ii++) {
+                        for (let jj = j-1; jj <= j + 1; jj++) {
+                            if (
+                                ii >= 0 &&
+                                ii < iRows &&
+                                jj >= 0 &&
+                                jj < iColumns
+                            ) {
+                                count++;
+                                tempPixel.R += matrixPixel[ii][jj].R;
+                                tempPixel.G += matrixPixel[ii][jj].G;
+                                tempPixel.B += matrixPixel[ii][jj].B;
+                            }
+                        }
+                    }
+                    newMatrix[i][j].R = tempPixel.R / count;
+                    newMatrix[i][j].G = tempPixel.G / count;
+                    newMatrix[i][j].B = tempPixel.B / count;
                 }
-                rowPixels.push({
-                    R: imgArrData[i],
-                    G: imgArrData[i + 1],
-                    B: imgArrData[i + 2],
-                    A: imgArrData[i + 3]
-                });
             }
-            pixels.push(rowPixels.slice(0));
-            rowPixels.length = 0;
-            return pixels;
+            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
+            return _img256;
         },
-        $_imgMatrixPixel2ArrData(matrixPixel) {
+        $_imgNeon:function(paras){
             var _this = this;
-            let imgArrData = [];
-            matrixPixel.forEach(row => {
-                row.forEach(pixel => {
-                    imgArrData.push(row.R);
-                    imgArrData.push(row.G);
-                    imgArrData.push(row.B);
-                    imgArrData.push(row.A);
-                });
-            });
-            return imgArrData;
+            if (!paras.imgData) return null;
+            let _img256 = paras.imgData;
+            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let newMatrix=matrixPixel.slice(0);
+            let iRows = matrixPixel.length;
+            let iColumns = matrixPixel[0].length;
+            for (let i = 0; i < iRows; i++) {
+                for (let j = 0; j < iColumns; j++) {
+                    if(i+1<iRows&&j+1<iColumns){
+                        newMatrix[i][j].R=2*Math.sqrt(Math.pow((matrixPixel[i][j].R-matrixPixel[i][j+1].R),2)+Math.pow((matrixPixel[i][j].R-matrixPixel[i+1][j].R),2));
+                        newMatrix[i][j].G=2*Math.sqrt(Math.pow((matrixPixel[i][j].G-matrixPixel[i][j+1].G),2)+Math.pow((matrixPixel[i][j].G-matrixPixel[i+1][j].G),2));
+                        newMatrix[i][j].B=2*Math.sqrt(Math.pow((matrixPixel[i][j].B-matrixPixel[i][j+1].B),2)+Math.pow((matrixPixel[i][j].B-matrixPixel[i+1][j].B),2));
+                    }
+                    else if(i+1<iRows){
+                        newMatrix[i][j].R=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].R-matrixPixel[i+1][j].R),2));
+                        newMatrix[i][j].G=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].G-matrixPixel[i+1][j].G),2));
+                        newMatrix[i][j].B=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].B-matrixPixel[i+1][j].B),2));
+                    }
+                    else if(j+1<iColumns){
+                        newMatrix[i][j].R=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].R-matrixPixel[i][j+1].R),2));
+                        newMatrix[i][j].G=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].G-matrixPixel[i][j+1].G),2));
+                        newMatrix[i][j].B=2*Math.sqrt(2*Math.pow((matrixPixel[i][j].B-matrixPixel[i][j+1].B),2));
+                    }
+                }
+            }
+            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
+            return _img256;
+        },
+        $_imgRelief:function(paras){
+            var _this = this;
+            if (!paras.imgData) return null;
+            const RELIEF_NUMBER=128;
+            let _img256 = paras.imgData;
+            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let newMatrix=matrixPixel.slice(0);
+            let iRows = matrixPixel.length;
+            let iColumns = matrixPixel[0].length;
+            for (let i = 0; i < iRows-1; i++) {
+                for (let j = 0; j < iColumns-1; j++) {
+                    newMatrix[i][j].R=(matrixPixel[i][j].R-matrixPixel[i+1][j+1].R+RELIEF_NUMBER);
+                    newMatrix[i][j].G=(matrixPixel[i][j].G-matrixPixel[i+1][j+1].G+RELIEF_NUMBER);
+                    newMatrix[i][j].B=(matrixPixel[i][j].B-matrixPixel[i+1][j+1].B+RELIEF_NUMBER);
+                    newMatrix[i][j].R<0?0:newMatrix[i][j].R>255?255:newMatrix[i][j].R;
+                    newMatrix[i][j].G<0?0:newMatrix[i][j].R>255?255:newMatrix[i][j].G;
+                    newMatrix[i][j].B<0?0:newMatrix[i][j].R>255?255:newMatrix[i][j].B;
+                }
+            }
+            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
+            _img256=_this.$_imgGray({imgData:_img256,index:1});
+            return _img256;
         }
     }
 };
