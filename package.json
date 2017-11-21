@@ -11,10 +11,11 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "deploy":" cd dist && rm -rf static index.html && git add . && git commit -m 'clear' && git push -f origin gh-pages && cd .. && node build/build.js && cd dist && git add . && git commit -m 'update' && git push -f origin gh-pages"
+    "deploy": " cd dist && rm -rf static index.html && git add . && git commit -m 'clear' && git push -f origin gh-pages && cd .. && node build/build.js && cd dist && git add . && git commit -m 'update' && git push -f origin gh-pages"
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "qrcodejs2": "0.0.2",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0"
   },

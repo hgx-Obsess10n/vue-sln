@@ -24,7 +24,7 @@
       <!--Image-->
       <div class="imgContent">
             <input class="v-center" type="file" v-on:change="$_ImgFileChange" ref="eleImgFile">
-            <canvas title="左键点击下载" class="imgShow" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleImgCanvas"></canvas>
+            <canvas class="imgShow" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleImgCanvas"></canvas>
       </div>
   </div>
 </template>
@@ -70,7 +70,7 @@ export default {
                 };
             }
         },
-        $_ShowImg: function(callback) {
+        $_ShowImg: function(funcCallback) {
             var _this = this;
             let img = new Image();
             img.src = _this.imgNowData;
@@ -99,7 +99,7 @@ export default {
                         _height
                     );
 
-                    if (typeof callback == "function") callback();
+                    if (typeof funcCallback == "function") funcCallback();
                 });
             };
         },
@@ -149,9 +149,9 @@ export default {
             if(bNeedReturn)
                 return imgArrData;
         },
-        $_ImgTranslate: function(funcName, funcPara) {
+        $_ImgTranslate: function(funcProcess, funcPara) {
             var _this = this;
-            if (!_this.imgData || typeof funcName != "function") return;
+            if (!_this.imgData || typeof funcProcess != "function") return;
             if (funcPara == undefined) funcPara = {};
             _this.$_ShowImg(function() {
                 let eleCanvas = _this.$refs.eleImgCanvas;
@@ -164,7 +164,7 @@ export default {
                 );
 
                 funcPara.imgData = _img256;
-                _img256 = funcName(funcPara);
+                _img256 = funcProcess(funcPara);
                 if (_img256) {
                     _this.$refs.eleImgCanvas
                         .getContext("2d")

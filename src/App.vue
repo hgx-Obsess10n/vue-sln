@@ -32,6 +32,11 @@
 						<img src="/static/img/icon/image.png" alt="ImgProcess"><span>图片处理</span>
 					</router-link>
 				</li>
+				<li>
+					<router-link to="/QRCode" class="clearFix">
+						<img src="/static/img/icon/qr-code.png" alt="QRCode"><span>生成二维码</span>
+					</router-link>
+				</li>
 			</ul>
 		</div>
 		<!--菜单 End-->

@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Index from '@/components/Index'
 import Song from '@/components/Song'
 import ImgProcess from '@/components/ImgProcess'
-import Na from '@/components/Na'
+import QRCode from '@/components/QRCode'
 
 Vue.use(Router)
 
@@ -20,9 +20,9 @@ export default new Router({
       component:ImgProcess
     },
     {
-      path:'/Na',
-      name:'Na',
-      component:Na
+      path:'/QRCode',
+      name:'QRCode',
+      component:QRCode
     },
     {
       path:'/Index',
