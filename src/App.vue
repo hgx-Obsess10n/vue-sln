@@ -29,7 +29,7 @@
 				</li>-->
 				<li>
 					<router-link to="/ImgProcess" class="clearFix">
-						<img src="" alt="ImgProcess"><span>图片处理</span>
+						<img src="/static/img/icon/image.png" alt="ImgProcess"><span>图片处理</span>
 					</router-link>
 				</li>
 			</ul>
@@ -233,11 +233,12 @@ export default {
 	color:white;
 }
 .ul-Menu li img{
-	float: left;
-	margin-left:20px;
-	width: 32px;
-	height: 32px;
-	overflow: hidden;
+	margin-top: 6px;
+    float: left;
+    margin-left: 20px;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
 }
 .ul-Menu li span{
 	float: left;

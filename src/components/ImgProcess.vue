@@ -4,24 +4,27 @@
       <div class="menuContent">
         <span class="menuTitle">功能列表</span>
           <ul class="FuncMenu">
-             <li v-on:click="$_showImg()">原图</li>
-             <li v-on:click="$_imgTranslate($_imgGray,{index:1})">灰度变换-浮点算法</li>
-             <li v-on:click="$_imgTranslate($_imgGray,{index:2})">灰度变换-整数算法</li>
-             <li v-on:click="$_imgTranslate($_imgGray,{index:3})">灰度变换-移位算法</li>
-             <li v-on:click="$_imgTranslate($_imgGray,{index:4})">灰度变换-平均值算法</li>
-             <li v-on:click="$_imgTranslate($_imgReversal)">逆反处理</li>
-             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:0})">全取红色</li>
-             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:1})">全取绿色</li>
-             <li v-on:click="$_imgTranslate($_imgSingleColor,{singleColor:2})">全取蓝色</li>
-             <li v-on:click="$_imgTranslate($_imgSmooth)">平滑处理</li>
-             <li v-on:click="$_imgTranslate($_imgNeon)">霓虹处理</li>
-             <li v-on:click="$_imgTranslate($_imgRelief)">浮雕处理</li>
+             <li v-on:click="$_ShowImg()">原图</li>
+             <li v-on:click="$_ImgTranslate($_Gray,{index:1})">灰度变换-浮点算法</li>
+             <!--<li v-on:click="$_ImgTranslate($_Gray,{index:2})">灰度变换-整数算法</li>
+             <li v-on:click="$_ImgTranslate($_Gray,{index:3})">灰度变换-移位算法</li>
+             <li v-on:click="$_ImgTranslate($_Gray,{index:4})">灰度变换-平均值算法</li>-->
+             <li v-on:click="$_ImgTranslate($_Reversal)">逆反处理</li>
+             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:0})">全取红色</li>
+             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:1})">全取绿色</li>
+             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:2})">全取蓝色</li>
+             <li v-on:click="$_ImgTranslate($_Smooth)">平滑处理</li>
+             <li v-on:click="$_ImgTranslate($_Neon)">霓虹处理</li>
+             <li v-on:click="$_ImgTranslate($_Relief)">浮雕处理</li>
+             <li v-on:click="$_ImgTranslate($_Inlay)">镶嵌处理</li>
+             <li v-on:click="$_ImgTranslate($_TwoValued_Fixed)">二值化-弱智127阈值</li>
+             <li v-on:click="$_ImgTranslate($_TwoValued_AVG)">二值化-平均值阈值</li>
           </ul>
       </div>
       <!--Image-->
       <div class="imgContent">
-            <input class="v-center" type="file" v-on:change="$_imgFileChange" ref="eleImgFile">
-            <canvas class="imgShow" v-bind:width="imgWidth" v-bind:height="imgHeight" ref="eleImgCanvas"></canvas>
+            <input class="v-center" type="file" v-on:change="$_ImgFileChange" ref="eleImgFile">
+            <canvas title="左键点击下载" class="imgShow" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleImgCanvas"></canvas>
       </div>
   </div>
 </template>
@@ -39,12 +42,16 @@ export default {
         return {
             imgData: null,
             imgNowData: "",
-            imgWidth: 500,
-            imgHeight: 500
+            canvasWidth: 500,
+            canvasHeight: 500,
+            imgWidth:0,
+            imgHeight:0,
+            MAX_WIDTH:500,
+            MAX_HEIGHT:500
         };
     },
     methods: {
-        $_imgFileChange: function() {
+        $_ImgFileChange: function() {
             var _this = this;
             let files = this.$refs.eleImgFile.files;
             if (files.length > 0) {
@@ -59,11 +66,11 @@ export default {
                     _this.imgData = res.target.result;
                     _this.imgNowData = _this.imgData;
                     _this.currentFuction = "";
-                    _this.$_showImg();
+                    _this.$_ShowImg();
                 };
             }
         },
-        $_showImg: function(callback) {
+        $_ShowImg: function(callback) {
             var _this = this;
             let img = new Image();
             img.src = _this.imgNowData;
@@ -71,35 +78,37 @@ export default {
                 let _width = res.target.width;
                 let _height = res.target.height;
                 let ratio = 1;
-                if (_width > 500) ratio = 500 / _width;
-                if (_height * ratio > 500) ratio = 500 / _height;
+                if (_width > _this.MAX_WIDTH) ratio = _this.MAX_WIDTH / _width;
+                if (_height * ratio > _this.MAX_HEIGHT) ratio = _this.MAX_HEIGHT / _height;
 
-                _width = _width * ratio;
-                _height = _height * ratio;
+                _this.canvasWidth=_this.imgWidth=_width = _width * ratio;
+                _this.canvasHeight=_this.imgHeight=_height = _height * ratio;
+                
+                _this.$nextTick(function(){
+                    _this.$refs.eleImgCanvas
+                        .getContext("2d")
+                        .clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
 
-                _this.$refs.eleImgCanvas
-                    .getContext("2d")
-                    .clearRect(0, 0, _this.imgWidth, _this.imgHeight);
+                    let eleCanvas = _this.$refs.eleImgCanvas;
+                    let ctx = eleCanvas.getContext("2d");
+                    ctx.drawImage(
+                        img,
+                        (_this.canvasWidth - _width) / 2,
+                        (_this.canvasHeight - _height) / 2,
+                        _width,
+                        _height
+                    );
 
-                let eleCanvas = _this.$refs.eleImgCanvas;
-                let ctx = eleCanvas.getContext("2d");
-                ctx.drawImage(
-                    img,
-                    (_this.imgWidth - _width) / 2,
-                    (_this.imgHeight - _height) / 2,
-                    _width,
-                    _height
-                );
-
-                if (typeof callback == "function") callback();
+                    if (typeof callback == "function") callback();
+                });
             };
         },
-        $_imgArrData2MatrixPixel: function(imgArrData) {
+        $_ImgArrData2MatrixPixel: function(imgArrData) {
             var _this = this;
             let pixels = [];
             let rowPixels = [];
             for (let i = 0, rowIndex = 0; i < imgArrData.length; i += 4) {
-                if (i >= (rowIndex + 1) * _this.imgWidth * 4) {
+                if (i >= (rowIndex + 1) * _this.canvasWidth * 4) {
                     rowIndex += 1;
                     pixels.push(rowPixels.slice(0));
                     rowPixels.length = 0;
@@ -115,7 +124,7 @@ export default {
             rowPixels.length = 0;
             return pixels;
         },
-        $_imgMatrixPixel2ArrData(matrixPixel,arrData) {
+        $_ImgMatrixPixel2ArrData(matrixPixel,arrData) {
             var _this = this;
             let bNeedReturn = arrData==undefined;
             let imgArrData = [];
@@ -140,18 +149,18 @@ export default {
             if(bNeedReturn)
                 return imgArrData;
         },
-        $_imgTranslate: function(funcName, funcPara) {
+        $_ImgTranslate: function(funcName, funcPara) {
             var _this = this;
             if (!_this.imgData || typeof funcName != "function") return;
             if (funcPara == undefined) funcPara = {};
-            _this.$_showImg(function() {
+            _this.$_ShowImg(function() {
                 let eleCanvas = _this.$refs.eleImgCanvas;
                 let ctx = eleCanvas.getContext("2d");
                 let _img256 = ctx.getImageData(
                     0,
                     0,
-                    _this.imgWidth,
-                    _this.imgHeight
+                    _this.canvasWidth,
+                    _this.canvasHeight
                 );
 
                 funcPara.imgData = _img256;
@@ -159,20 +168,20 @@ export default {
                 if (_img256) {
                     _this.$refs.eleImgCanvas
                         .getContext("2d")
-                        .clearRect(0, 0, _this.imgWidth, _this.imgHeight);
+                        .clearRect(0, 0, _this.canvasWidth, _this.canvasHeight);
                     ctx.putImageData(
                         _img256,
                         0,
                         0,
                         0,
                         0,
-                        _this.imgWidth,
-                        _this.imgHeight
+                        _this.canvasWidth,
+                        _this.canvasHeight
                     );
                 }
             });
         },
-        $_imgGray: function(paras) {
+        $_Gray: function(paras) {
             var _this = this;
             if (!paras.imgData) return null;
             let index = !paras.index ? 1 : paras.index;
@@ -201,7 +210,7 @@ export default {
             }
             return _img256;
         },
-        $_imgReversal: function(paras) {
+        $_Reversal: function(paras) {
             var _this = this;
             if (!paras.imgData) return null;
             let _img256 = paras.imgData;
@@ -212,7 +221,7 @@ export default {
             }
             return _img256;
         },
-        $_imgSingleColor: function(paras) {
+        $_SingleColor: function(paras) {
             var _this = this;
             if (!paras.imgData) return null;
             let _singleColor =
@@ -228,11 +237,11 @@ export default {
             }
             return _img256;
         },
-        $_imgSmooth: function(paras) {
+        $_Smooth: function(paras) {
             var _this = this;
             if (!paras.imgData) return null;
             let _img256 = paras.imgData;
-            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let matrixPixel = _this.$_ImgArrData2MatrixPixel(_img256.data);
             let newMatrix=matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -261,14 +270,14 @@ export default {
                     newMatrix[i][j].B = tempPixel.B / count;
                 }
             }
-            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
+            _this.$_ImgMatrixPixel2ArrData(newMatrix,_img256.data);
             return _img256;
         },
-        $_imgNeon:function(paras){
+        $_Neon:function(paras){
             var _this = this;
             if (!paras.imgData) return null;
             let _img256 = paras.imgData;
-            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let matrixPixel = _this.$_ImgArrData2MatrixPixel(_img256.data);
             let newMatrix=matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -291,15 +300,15 @@ export default {
                     }
                 }
             }
-            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
+            _this.$_ImgMatrixPixel2ArrData(newMatrix,_img256.data);
             return _img256;
         },
-        $_imgRelief:function(paras){
+        $_Relief:function(paras){
             var _this = this;
             if (!paras.imgData) return null;
             const RELIEF_NUMBER=128;
             let _img256 = paras.imgData;
-            let matrixPixel = _this.$_imgArrData2MatrixPixel(_img256.data);
+            let matrixPixel = _this.$_ImgArrData2MatrixPixel(_img256.data);
             let newMatrix=matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -313,8 +322,111 @@ export default {
                     newMatrix[i][j].B<0?0:newMatrix[i][j].R>255?255:newMatrix[i][j].B;
                 }
             }
-            _this.$_imgMatrixPixel2ArrData(newMatrix,_img256.data);
-            _img256=_this.$_imgGray({imgData:_img256,index:1});
+            _this.$_ImgMatrixPixel2ArrData(newMatrix,_img256.data);
+            _img256=_this.$_Gray({imgData:_img256,index:1});
+            return _img256;
+        },
+        $_Inlay:function(paras){
+            var _this = this;
+            if (!paras.imgData) return null;
+            const RELIEF_NUMBER=128;
+            let _img256 = paras.imgData;
+            let matrixPixel = _this.$_ImgArrData2MatrixPixel(_img256.data);
+            let newMatrix=matrixPixel.slice(0);
+            let iRows = matrixPixel.length;
+            let iColumns = matrixPixel[0].length;
+            for (let i = 0; i < iRows-2; i+=3) {
+                for (let j = 0; j < iColumns-2; j+=3) {
+                    let R=(matrixPixel[i][j].R+matrixPixel[i][j+1].R+matrixPixel[i][j+2].R+matrixPixel[i+1][j].R+matrixPixel[i+1][j+1].R+matrixPixel[i+1][j+2].R+matrixPixel[i+2][j].R+matrixPixel[i+2][j+1].R+matrixPixel[i+2][j+2].R)/9;
+                    let G=(matrixPixel[i][j].G+matrixPixel[i][j+1].G+matrixPixel[i][j+2].G+matrixPixel[i+1][j].G+matrixPixel[i+1][j+1].G+matrixPixel[i+1][j+2].G+matrixPixel[i+2][j].G+matrixPixel[i+2][j+1].G+matrixPixel[i+2][j+2].G)/9;
+                    let B=(matrixPixel[i][j].B+matrixPixel[i][j+1].B+matrixPixel[i][j+2].B+matrixPixel[i+1][j].B+matrixPixel[i+1][j+1].B+matrixPixel[i+1][j+2].B+matrixPixel[i+2][j].B+matrixPixel[i+2][j+1].B+matrixPixel[i+2][j+2].B)/9;
+
+                    matrixPixel[i][j].R=R;
+                    matrixPixel[i][j+1].R=R;
+                    matrixPixel[i][j+2].R=R;
+                    matrixPixel[i+1][j].R=R;
+                    matrixPixel[i+1][j+1].R=R;
+                    matrixPixel[i+1][j+2].R=R;
+                    matrixPixel[i+2][j].R=R;
+                    matrixPixel[i+2][j+1].R=R;
+                    matrixPixel[i+2][j+2].R=R;
+
+                    matrixPixel[i][j].G=G;
+                    matrixPixel[i][j+1].G=G;
+                    matrixPixel[i][j+2].G=G;
+                    matrixPixel[i+1][j].G=G;
+                    matrixPixel[i+1][j+1].G=G;
+                    matrixPixel[i+1][j+2].G=G;
+                    matrixPixel[i+2][j].G=G;
+                    matrixPixel[i+2][j+1].G=G;
+                    matrixPixel[i+2][j+2].G=G;
+
+                    matrixPixel[i][j].B=B;
+                    matrixPixel[i][j+1].B=B;
+                    matrixPixel[i][j+2].B=B;
+                    matrixPixel[i+1][j].B=B;
+                    matrixPixel[i+1][j+1].B=B;
+                    matrixPixel[i+1][j+2].B=B;
+                    matrixPixel[i+2][j].B=B;
+                    matrixPixel[i+2][j+1].B=B;
+                    matrixPixel[i+2][j+2].B=B;
+                }
+            }
+            _this.$_ImgMatrixPixel2ArrData(newMatrix,_img256.data);
+            _img256=_this.$_Gray({imgData:_img256,index:1});
+            return _img256;
+        },
+        $_TwoValued_Fixed: function(paras) {
+            var _this = this;
+            if (!paras.imgData) return null;
+            let index = !paras.index ? 1 : paras.index;
+            let _img256 = paras.imgData;
+            const THRESHOLD_VALUE=127;
+            for (let i = 0; i < _img256.data.length; i += 4) {
+                let R = _img256.data[i]; //R(0-255)
+                let G = _img256.data[i + 1]; //G(0-255)
+                let B = _img256.data[i + 2]; //B(0-255)
+
+                let gray = R * 0.299 + G * 0.587 + B * 0.114;
+                gray=gray>=THRESHOLD_VALUE?255:0;
+
+                _img256.data[i] = gray;
+                _img256.data[i + 1] = gray;
+                _img256.data[i + 2] = gray;
+            }
+
+            return _img256;
+        },
+        $_TwoValued_AVG: function(paras) {
+            var _this = this;
+            if (!paras.imgData) return null;
+            let index = !paras.index ? 1 : paras.index;
+            let _img256 = paras.imgData;
+            let iDataSum=0;
+            let iDataCount=0;
+            for (let i = 0; i < _img256.data.length; i += 4) {
+                let R = _img256.data[i]; //R(0-255)
+                let G = _img256.data[i + 1]; //G(0-255)
+                let B = _img256.data[i + 2]; //B(0-255)
+
+                let gray = R * 0.299 + G * 0.587 + B * 0.114;
+                iDataSum+=gray;
+                iDataCount++;
+            }
+            let thresholdValue=iDataSum/iDataCount;
+            for (let i = 0; i < _img256.data.length; i += 4) {
+                let R = _img256.data[i]; //R(0-255)
+                let G = _img256.data[i + 1]; //G(0-255)
+                let B = _img256.data[i + 2]; //B(0-255)
+
+                let gray = R * 0.299 + G * 0.587 + B * 0.114;
+                gray=gray>=thresholdValue?255:0;
+
+                _img256.data[i] = gray;
+                _img256.data[i + 1] = gray;
+                _img256.data[i + 2] = gray;
+            }
+
             return _img256;
         }
     }
