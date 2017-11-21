@@ -60,6 +60,9 @@ var _timer= null;
 export default {
 	name: 'app',
 	created:function(){
+		if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)){
+			alert('请在PC上浏览本网页');
+		}
 		this._timer=setInterval(this.$_getTime,400);
 	},
 	data() {
