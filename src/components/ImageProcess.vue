@@ -1,37 +1,33 @@
 <template>
-  <div class="clearfix">
-      <!--Menu-->
-      <div class="menuContent">
-        <span class="menuTitle">功能列表</span>
-          <ul class="FuncMenu">
-             <li v-on:click="$_ShowImg()">原图</li>
-             <li v-on:click="$_ImgTranslate($_Gray,{index:1})">灰度变换-浮点算法</li>
-             <!--<li v-on:click="$_ImgTranslate($_Gray,{index:2})">灰度变换-整数算法</li>
-             <li v-on:click="$_ImgTranslate($_Gray,{index:3})">灰度变换-移位算法</li>
-             <li v-on:click="$_ImgTranslate($_Gray,{index:4})">灰度变换-平均值算法</li>-->
-             <li v-on:click="$_ImgTranslate($_Reversal)">逆反处理</li>
-             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:0})">全取红色</li>
-             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:1})">全取绿色</li>
-             <li v-on:click="$_ImgTranslate($_SingleColor,{singleColor:2})">全取蓝色</li>
-             <li v-on:click="$_ImgTranslate($_Smooth)">平滑处理</li>
-             <li v-on:click="$_ImgTranslate($_Neon)">霓虹处理</li>
-             <li v-on:click="$_ImgTranslate($_Relief)">浮雕处理</li>
-             <li v-on:click="$_ImgTranslate($_Inlay)">镶嵌处理</li>
-             <li v-on:click="$_ImgTranslate($_TwoValued_Fixed)">二值化-弱智127阈值</li>
-             <li v-on:click="$_ImgTranslate($_TwoValued_AVG)">二值化-平均值阈值</li>
-          </ul>
-      </div>
-      <!--Image-->
-      <div class="imgContent">
-            <input class="h-center" type="file" v-on:change="$_ImgFileChange" ref="eleImgFile">
-            <canvas class="imgShow" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleImgCanvas"></canvas>
-      </div>
+  <div>
+    <input type="file" style="display:none" v-on:change="$_changeFile" ref="eleIFile">
+    <span class="sp h-center color1" v-on:click="$_chooseFile">选择图片</span>
+    <span class="sp h-center color1" v-on:click.stop="$_setFnListShow(true)">{{curFnTitle}}</span>
+    <ul v-show="fnListShow" class="fnList ul-nolist">
+      <li v-on:click="$_setFnTitle('原图');$_showImg()">原图</li>
+      <li v-on:click="$_setFnTitle('灰度变换-浮点算法');$_imgTranslate($_gray,{index:1})">灰度变换-浮点算法</li>
+      <!--<li v-on:click="$_setFnTitle('灰度变换-整数算法');$_imgTranslate($_gray,{index:2})">灰度变换-整数算法</li>
+      <li v-on:click="$_setFnTitle('灰度变换-移位算法');$_imgTranslate($_gray,{index:3})">灰度变换-移位算法</li>
+      <li v-on:click="$_setFnTitle('灰度变换-平均值算法');$_imgTranslate($_gray,{index:4})">灰度变换-平均值算法</li>-->
+      <li v-on:click="$_setFnTitle('逆反处理');$_imgTranslate($_reversal)">逆反处理</li>
+      <li v-on:click="$_setFnTitle('全取红色');$_imgTranslate($_singleColor,{singleColor:0})">全取红色</li>
+      <li v-on:click="$_setFnTitle('全取绿色');$_imgTranslate($_singleColor,{singleColor:1})">全取绿色</li>
+      <li v-on:click="$_setFnTitle('全取蓝色');$_imgTranslate($_singleColor,{singleColor:2})">全取蓝色</li>
+      <li v-on:click="$_setFnTitle('平滑处理');$_imgTranslate($_smooth)">平滑处理</li>
+      <li v-on:click="$_setFnTitle('霓虹处理');$_imgTranslate($_neon)">霓虹处理</li>
+      <li v-on:click="$_setFnTitle('浮雕处理');$_imgTranslate($_relief)">浮雕处理</li>
+      <li v-on:click="$_setFnTitle('镶嵌处理');$_imgTranslate($_inlay)">镶嵌处理</li>
+      <li v-on:click="$_setFnTitle('二值化-弱智127阈值');$_imgTranslate($_twoValued_Fixed)">二值化-弱智127阈值</li>
+      <li v-on:click="$_setFnTitle('二值化-平均值阈值');$_imgTranslate($_twoValued_AVG)">二值化-平均值阈值</li>
+    </ul>
+    <br>
+    <canvas class="canvasImg h-center" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleCanvas"></canvas>
   </div>
 </template>
 <script>
 export default {
-    name: 'ImgProcess',
-    created() {
+    name: 'ImageProcess',
+    created: function() {
         let data = {
             url: window.location.hash,
             title: '图片处理'
@@ -40,20 +36,33 @@ export default {
     },
     data: function() {
         return {
-            imgData: null,
-            imgNowData: '',
+            curFileName: '',
+            curFnTitle: '原图',
             canvasWidth: 500,
             canvasHeight: 500,
             imgWidth: 0,
             imgHeight: 0,
             MAX_WIDTH: 500,
-            MAX_HEIGHT: 500
+            MAX_HEIGHT: 500,
+            fnListShow: false
         };
     },
     methods: {
-        $_ImgFileChange: function() {
+        $_chooseFile: function() {
             var self = this;
-            let files = this.$refs.eleImgFile.files;
+            self.$refs.eleIFile.click();
+        },
+        $_setFnListShow: function(bShow) {
+            var self = this;
+            self.fnListShow = bShow;
+        },
+        $_setFnTitle: function(text) {
+            var self = this;
+            self.curFnTitle = text ? text : '';
+        },
+        $_changeFile: function() {
+            var self = this;
+            let files = self.$refs.eleIFile.files;
             if (files.length > 0) {
                 let file = files[0];
                 if (!(/^image\//).test(file.type)) {
@@ -63,17 +72,16 @@ export default {
                 let fr = new FileReader();
                 fr.readAsDataURL(file);
                 fr.onload = function(res) {
-                    self.imgData = res.target.result;
-                    self.imgNowData = self.imgData;
-                    self.currentFuction = '';
-                    self.$_ShowImg();
+                    self.imgBase64 = res.target.result;
+                    self.curFnTitle = '原图';
+                    self.$_showImg();
                 };
             }
         },
-        $_ShowImg: function(funcCallback) {
+        $_showImg: function(fnCallback) {
             var self = this;
             let img = new Image();
-            img.src = self.imgNowData;
+            img.src = self.imgBase64;
             img.onload = function(res) {
                 let width = res.target.width;
                 let height = res.target.height;
@@ -89,27 +97,25 @@ export default {
                 self.canvasHeight = self.imgHeight = height = height * ratio;
 
                 self.$nextTick(function() {
-                    self.$refs.eleImgCanvas
+                    self.$refs.eleCanvas
                         .getContext('2d')
                         .clearRect(0, 0, self.canvasWidth, self.canvasHeight);
 
-                    let eleCanvas = self.$refs.eleImgCanvas;
+                    let eleCanvas = self.$refs.eleCanvas;
                     let ctx = eleCanvas.getContext('2d');
-                    ctx.drawImage(
-                        img,
-                        (self.canvasWidth - width) / 2,
-                        (self.canvasHeight - height) / 2,
-                        width,
-                        height
-                    );
+                    ctx.drawImage(img, 0, 0, width, height);
 
-                    if (typeof funcCallback == 'function') {
-                        funcCallback();
+                    if (typeof fnCallback == 'function') {
+                        fnCallback();
                     }
                 });
             };
         },
-        $_ImgArrData2MatrixPixel: function(imgArrData) {
+        $_parentGlobalClick: function() {
+            var self = this;
+            self.fnListShow = false;
+        },
+        $_imgArrData2MatrixPixel: function(imgArrData) {
             var self = this;
             let pixels = [];
             let rowPixels = [];
@@ -130,7 +136,7 @@ export default {
             rowPixels.length = 0;
             return pixels;
         },
-        $_ImgMatrixPixel2ArrData(matrixPixel, arrData) {
+        $_imgMatrixPixel2ArrData(matrixPixel, arrData) {
             let imgArrData = [];
             let i = 0;
             matrixPixel.forEach(row => {
@@ -151,20 +157,18 @@ export default {
             });
             if (!arrData) {
                 return imgArrData;
-            } else {
-                return 0;
             }
         },
-        $_ImgTranslate: function(funcProcess, funcPara) {
+        $_imgTranslate: function(fnProcess, fnParas) {
             var self = this;
-            if (!self.imgData || typeof funcProcess != 'function') {
+            if (!self.imgBase64 || typeof fnProcess != 'function') {
                 return;
             }
-            if (!funcPara) {
-                funcPara = {};
+            if (!fnParas) {
+                fnParas = {};
             }
-            self.$_ShowImg(function() {
-                let eleCanvas = self.$refs.eleImgCanvas;
+            self.$_showImg(function() {
+                let eleCanvas = self.$refs.eleCanvas;
                 let ctx = eleCanvas.getContext('2d');
                 let img256 = ctx.getImageData(
                     0,
@@ -173,10 +177,10 @@ export default {
                     self.canvasHeight
                 );
 
-                funcPara.imgData = img256;
-                img256 = funcProcess(funcPara);
+                fnParas.imgData = img256;
+                img256 = fnProcess(fnParas);
                 if (img256) {
-                    self.$refs.eleImgCanvas
+                    self.$refs.eleCanvas
                         .getContext('2d')
                         .clearRect(0, 0, self.canvasWidth, self.canvasHeight);
                     ctx.putImageData(
@@ -191,7 +195,7 @@ export default {
                 }
             });
         },
-        $_Gray: function(paras) {
+        $_gray: function(paras) {
             if (!paras.imgData) {
                 return null;
             }
@@ -221,7 +225,7 @@ export default {
             }
             return img256;
         },
-        $_Reversal: function(paras) {
+        $_reversal: function(paras) {
             if (!paras.imgData) {
                 return null;
             }
@@ -233,7 +237,7 @@ export default {
             }
             return img256;
         },
-        $_SingleColor: function(paras) {
+        $_singleColor: function(paras) {
             if (!paras.imgData) {
                 return null;
             }
@@ -250,13 +254,13 @@ export default {
             }
             return img256;
         },
-        $_Smooth: function(paras) {
+        $_smooth: function(paras) {
             var self = this;
             if (!paras.imgData) {
                 return null;
             }
             let img256 = paras.imgData;
-            let matrixPixel = self.$_ImgArrData2MatrixPixel(img256.data);
+            let matrixPixel = self.$_imgArrData2MatrixPixel(img256.data);
             let newMatrix = matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -284,16 +288,16 @@ export default {
                     newMatrix[i][j].B = tempPixel.B / count;
                 }
             }
-            self.$_ImgMatrixPixel2ArrData(newMatrix, img256.data);
+            self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
             return img256;
         },
-        $_Neon: function(paras) {
+        $_neon: function(paras) {
             var self = this;
             if (!paras.imgData) {
                 return null;
             }
             let img256 = paras.imgData;
-            let matrixPixel = self.$_ImgArrData2MatrixPixel(img256.data);
+            let matrixPixel = self.$_imgArrData2MatrixPixel(img256.data);
             let newMatrix = matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -407,17 +411,17 @@ export default {
                     }
                 }
             }
-            self.$_ImgMatrixPixel2ArrData(newMatrix, img256.data);
+            self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
             return img256;
         },
-        $_Relief: function(paras) {
+        $_relief: function(paras) {
             var self = this;
             if (!paras.imgData) {
                 return null;
             }
             const RELIEF_NUMBER = 128;
             let img256 = paras.imgData;
-            let matrixPixel = self.$_ImgArrData2MatrixPixel(img256.data);
+            let matrixPixel = self.$_imgArrData2MatrixPixel(img256.data);
             let newMatrix = matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -449,17 +453,17 @@ export default {
                             : newMatrix[i][j].B > 255 ? 255 : newMatrix[i][j].B;
                 }
             }
-            self.$_ImgMatrixPixel2ArrData(newMatrix, img256.data);
-            img256 = self.$_Gray({ imgData: img256, index: 1 });
+            self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
+            img256 = self.$_gray({ imgData: img256, index: 1 });
             return img256;
         },
-        $_Inlay: function(paras) {
+        $_inlay: function(paras) {
             var self = this;
             if (!paras.imgData) {
                 return null;
             }
             let img256 = paras.imgData;
-            let matrixPixel = self.$_ImgArrData2MatrixPixel(img256.data);
+            let matrixPixel = self.$_imgArrData2MatrixPixel(img256.data);
             let newMatrix = matrixPixel.slice(0);
             let iRows = matrixPixel.length;
             let iColumns = matrixPixel[0].length;
@@ -530,11 +534,11 @@ export default {
                     matrixPixel[i + 2][j + 2].B = B;
                 }
             }
-            self.$_ImgMatrixPixel2ArrData(newMatrix, img256.data);
-            img256 = self.$_Gray({ imgData: img256, index: 1 });
+            self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
+            img256 = self.$_gray({ imgData: img256, index: 1 });
             return img256;
         },
-        $_TwoValued_Fixed: function(paras) {
+        $_twoValued_Fixed: function(paras) {
             if (!paras.imgData) {
                 return null;
             }
@@ -555,7 +559,7 @@ export default {
 
             return img256;
         },
-        $_TwoValued_AVG: function(paras) {
+        $_twoValued_AVG: function(paras) {
             if (!paras.imgData) {
                 return null;
             }
@@ -591,53 +595,45 @@ export default {
 };
 </script>
 <style scoped>
-.menuTitle {
-    color: wheat;
-    text-align: left;
-    line-height: 40px;
-    margin-left: 20px;
-    font-weight: 500;
-    font-size: 20px;
-}
-.menuContent {
-    position: absolute;
-    top: 31px;
-    left: 0;
-    bottom: 0;
+.sp {
+    display: block;
+    padding: 0 10px;
+    border: 1px solid #aaa;
+    line-height: 24px;
+    max-width: 200px;
     width: 200px;
-    background-color: #333;
-    text-align: left;
-    display: inline-block;
-}
-.FuncMenu {
-    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 11px;
     text-align: center;
-}
-.FuncMenu li {
     cursor: pointer;
-    line-height: 36px;
-    text-align: left;
-    padding-left: 35px;
-}
-.FuncMenu li:hover {
-    background-color: #aaa;
-    color: #333;
+    margin-top: 10px;
+    height: 26px;
 }
 
-.imgContent {
-    position: absolute;
-    top: 31px;
-    bottom: 0;
-    left: 220px;
-    right: 20px;
-    display: inline-block;
-    overflow: hidden;
-    padding-top: 10px;
+.canvasImg {
+    display: block;
+    margin-top: 15px;
+    max-width: 70%;
+    max-height: 70%;
 }
-.imgShow {
+.fnList {
     position: absolute;
-    top: 50%;
+    top: 73px;
+    width: 200px;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%);
+    background-color: white;
+    border: 1px solid #aaa;
+    border-top: none;
+    border-radius: 10px;
+}
+.fnList li {
+    text-align: center;
+    cursor: pointer;
+}
+.fnList li:hover {
+    background-color: rgb(255, 242, 184);
+    color: rgb(0, 136, 186);
 }
 </style>

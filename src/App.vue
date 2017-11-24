@@ -1,4 +1,5 @@
 <template>
+	<!--Only PC-->
 	<div id="app" class="app"
 		v-on:click="$_triggerMenuShow(false)" >
 
@@ -94,7 +95,7 @@ export default {
 			this.compShow=false;
 		},
 		$_getTime:function(){
-			var _this=this;
+			var self=this;
 			let curDate=new Date();
 			let curDateInfo={
 				Year:curDate.getFullYear(),
@@ -104,18 +105,18 @@ export default {
 				Hour:curDate.getHours(),
 				Minute:curDate.getMinutes()
 			}
-			_this.curTime=''+(curDateInfo.Year)+'-'
+			self.curTime=''+(curDateInfo.Year)+'-'
 							+(curDateInfo.Month<10?'0':'')+curDateInfo.Month+'-'
 							+(curDateInfo.Date<10?'0':'')+curDateInfo.Date+'\n'
 							+(curDateInfo.Hour<10?'0':'')+curDateInfo.Hour+':'
 							+(curDateInfo.Minute<10?'0':'')+curDateInfo.Minute;
 		},
 		$_triggerMenuShow:function(flag){
-			var _this = this;
+			var self = this;
 			if(flag===undefined)
-				_this.menuShow=!_this.menuShow;
+				self.menuShow=!self.menuShow;
 			else
-				_this.menuShow=!!flag;
+				self.menuShow=flag;
 		}
 
 	},

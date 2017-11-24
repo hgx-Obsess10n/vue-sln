@@ -26,11 +26,11 @@
 
 <script>
 export default {
-    name: "Index",
+    name: 'Card',
     data() {
-        let _this = this;
+        let self = this;
         let cards = [];
-        _this.getCards();
+        self.getCards();
         return {
             cards: cards,
             hoverIndex: -1
@@ -40,15 +40,15 @@ export default {
         let data = {
             url: window.location.hash
         };
-        this.$emit("CompInit", data);
+        this.$emit('CompInit', data);
     },
     methods: {
         getCards: function() {
-            var _this = this;
-            this.$http.get("static/json/index-card.json").then(res => {
-                console.log("res", res);
-                if (res.status == 200) {
-                    _this.cards = res.data.list;
+            var self = this;
+            this.$http.get('static/json/index-card.json').then(res => {
+                console.log('res', res);
+                if (res.status === 200) {
+                    self.cards = res.data.list;
                 }
             });
         }

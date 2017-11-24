@@ -1,59 +1,53 @@
 <template>
     <div>
-        <input class="codeContent" type="text" v-model="txtContent" v-on:keyup.enter="$_CreateQRCode()">
-        <div class="codeBox" ref="divCode">
-            
-        </div>
+        <span>二维码内容：</span>
+        <textarea cols="20" rows="3" v-model="txtContent" v-on:keyup.enter="$_CreateQRCode()"></textarea>
+        <span class="color1" v-on:click="$_CreateQRCode()">生成</span>
+				<!--<input class="codeContent" type="text" v-model="txtContent" v-on:keyup.enter="$_CreateQRCode()">-->
+        <div class="codeBox" ref="divCode"></div>
     </div>
 </template>
 <script>
-import QRCode from 'qrcodejs2'
+import QRCode from 'qrcodejs2';
 export default {
-    name: "QRCode",
+    name: 'QRCode',
     created() {
         let data = {
             url: window.location.hash,
-            title: "生成二维码"
+            title: '生成二维码'
         };
-        this.$emit("CompInit", data);
+        this.$emit('CompInit', data);
     },
     data: function() {
         return {
-            txtContent:'',
-            qrcode:null
+            txtContent: '',
+            qrcode: null
         };
     },
     methods: {
-        $_CreateQRCode:function(){
-            var _this=this;
-            _this.txtContent=_this.txtContent.trim();
-            if(!!_this.txtContent){
-                if(_this.qrcode!=null){
-                    _this.qrcode.makeCode(_this.txtContent);
-                }
-                else{
-                    _this.qrcode=new QRCode(_this.$refs.divCode, {
-                        text: _this.txtContent,
-                        width: 128,
-                        height: 128,
-                        colorDark : "#000000",
-                        colorLight : "#ffffff",
-                        correctLevel : QRCode.CorrectLevel.H
-                    });
-                }
+        $_CreateQRCode: function() {
+            var self = this;
+            self.txtContent = self.txtContent.trim();
+            self.$refs.divCode.innerHTML = '';
+            if (self.txtContent) {
+                self.qrcode = new QRCode(self.$refs.divCode, {
+                    text: self.txtContent,
+                    width: 128,
+                    height: 128,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
             }
-            else if(_this.qrcode!=null)
-                _this.qrcode.clear();
-
         }
     }
 };
 </script>
 <style scoped>
-.codeContent{
-    margin-top:15px;
+.codeContent {
+    margin-top: 15px;
 }
-.codeBox{
-    margin-top:20px;
+.codeBox {
+    margin-top: 20px;
 }
 </style>
