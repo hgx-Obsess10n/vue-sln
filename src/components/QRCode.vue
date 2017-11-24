@@ -1,10 +1,8 @@
 <template>
     <div>
-        <span>二维码内容：</span>
-        <textarea cols="20" rows="3" v-model="txtContent" v-on:keyup.enter="$_CreateQRCode()"></textarea>
-        <span class="color1" v-on:click="$_CreateQRCode()">生成</span>
-				<!--<input class="codeContent" type="text" v-model="txtContent" v-on:keyup.enter="$_CreateQRCode()">-->
-        <div class="codeBox" ref="divCode"></div>
+        <input type="text" placeholder="二维码内容" class="codeContent h-center" v-model="txtContent">
+        <span class="sp color1 h-center" v-on:click="$_CreateQRCode()">生成</span>
+        <div class="codeBox h-center" ref="divCode"></div>
     </div>
 </template>
 <script>
@@ -45,9 +43,32 @@ export default {
 </script>
 <style scoped>
 .codeContent {
+    display: block;
+    width:200px;
+    line-height: 26px;
     margin-top: 15px;
+    border-style: none none solid none;
+    border-width: 1px;
+    border-color: #aaa;
+    outline: none;
 }
 .codeBox {
     margin-top: 20px;
+    max-width: 128px;
+}
+.sp {
+    display: block;
+    padding: 0 10px;
+    border: 1px solid #aaa;
+    line-height: 24px;
+    max-width: 200px;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 11px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    height: 26px;
 }
 </style>
