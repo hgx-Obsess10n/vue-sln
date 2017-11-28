@@ -11,7 +11,7 @@
 			<router-link to="/ImageProcess" title="图片处理"><img src="/static/img/icon/image.png" alt="Img"></router-link>
 			<router-link to="/QRCode" title="生成二维码"><img src="/static/img/icon/qr-code.png" alt="QRCode"></router-link>
 		</div>
-		<router-view class="routerView w100 h100"
+		<router-view class="routerView"
 			v-on:CompInit="$_routerCompInit"
 			ref="eleRouterItem"> 
 		</router-view>

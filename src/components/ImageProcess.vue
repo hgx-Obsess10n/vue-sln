@@ -26,18 +26,18 @@
 </template>
 <script>
 export default {
-    name: 'ImageProcess',
+    name: "ImageProcess",
     created: function() {
         let data = {
             url: window.location.hash,
-            title: '图片处理'
+            title: "图片处理"
         };
-        this.$emit('CompInit', data);
+        this.$emit("CompInit", data);
     },
     data: function() {
         return {
-            curFileName: '',
-            curFnTitle: '原图',
+            curFileName: "",
+            curFnTitle: "原图",
             canvasWidth: 500,
             canvasHeight: 500,
             imgWidth: 0,
@@ -58,22 +58,22 @@ export default {
         },
         $_setFnTitle: function(text) {
             var self = this;
-            self.curFnTitle = text ? text : '';
+            self.curFnTitle = text ? text : "";
         },
         $_changeFile: function() {
             var self = this;
             let files = self.$refs.eleIFile.files;
             if (files.length > 0) {
                 let file = files[0];
-                if (!(/^image\//).test(file.type)) {
-                    alert('请选择图像文件');
+                if (!/^image\//.test(file.type)) {
+                    alert("请选择图像文件");
                     return;
                 }
                 let fr = new FileReader();
                 fr.readAsDataURL(file);
                 fr.onload = function(res) {
                     self.imgBase64 = res.target.result;
-                    self.curFnTitle = '原图';
+                    self.curFnTitle = "原图";
                     self.$_showImg();
                 };
             }
@@ -98,14 +98,14 @@ export default {
 
                 self.$nextTick(function() {
                     self.$refs.eleCanvas
-                        .getContext('2d')
+                        .getContext("2d")
                         .clearRect(0, 0, self.canvasWidth, self.canvasHeight);
 
                     let eleCanvas = self.$refs.eleCanvas;
-                    let ctx = eleCanvas.getContext('2d');
+                    let ctx = eleCanvas.getContext("2d");
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    if (typeof fnCallback == 'function') {
+                    if (typeof fnCallback == "function") {
                         fnCallback();
                     }
                 });
@@ -161,7 +161,7 @@ export default {
         },
         $_imgTranslate: function(fnProcess, fnParas) {
             var self = this;
-            if (!self.imgBase64 || typeof fnProcess != 'function') {
+            if (!self.imgBase64 || typeof fnProcess != "function") {
                 return;
             }
             if (!fnParas) {
@@ -169,7 +169,7 @@ export default {
             }
             self.$_showImg(function() {
                 let eleCanvas = self.$refs.eleCanvas;
-                let ctx = eleCanvas.getContext('2d');
+                let ctx = eleCanvas.getContext("2d");
                 let img256 = ctx.getImageData(
                     0,
                     0,
@@ -181,7 +181,7 @@ export default {
                 img256 = fnProcess(fnParas);
                 if (img256) {
                     self.$refs.eleCanvas
-                        .getContext('2d')
+                        .getContext("2d")
                         .clearRect(0, 0, self.canvasWidth, self.canvasHeight);
                     ctx.putImageData(
                         img256,
@@ -326,13 +326,9 @@ export default {
                                         matrixPixel[i][j + 1].G,
                                     2
                                 ) +
-                                    Math.pow(
-                                        matrixPixel[i][j].G -
-                                            matrixPixel[i + 1][j].G,
-                                        2
-                                    )
+                                    Math.pow(matrixPixel[i][j].G - matrixPixel[i + 1][j].G, 2)
                             );
-                        newMatrix[i][j].B =
+                        newMatrix[i][j].B=
                             2 *
                             Math.sqrt(
                                 Math.pow(
