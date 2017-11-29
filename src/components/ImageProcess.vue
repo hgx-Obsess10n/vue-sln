@@ -5,20 +5,20 @@
     <span class="sp h-center color1" v-on:click.stop="$_setFnListShow()">{{curFnTitle}}</span>
     <ul v-show="fnListShow" class="fnList ul-nolist">
       <li v-on:click="$_setFnTitle('原图');$_showImg()">原图</li>
-      <li v-on:click="$_setFnTitle('灰度变换-浮点算法');$_imgTranslate($_gray,{index:1})">灰度变换-浮点算法</li>
-      <!--<li v-on:click="$_setFnTitle('灰度变换-整数算法');$_imgTranslate($_gray,{index:2})">灰度变换-整数算法</li>
-      <li v-on:click="$_setFnTitle('灰度变换-移位算法');$_imgTranslate($_gray,{index:3})">灰度变换-移位算法</li>
-      <li v-on:click="$_setFnTitle('灰度变换-平均值算法');$_imgTranslate($_gray,{index:4})">灰度变换-平均值算法</li>-->
-      <li v-on:click="$_setFnTitle('逆反处理');$_imgTranslate($_reversal)">逆反处理</li>
-      <li v-on:click="$_setFnTitle('全取红色');$_imgTranslate($_singleColor,{singleColor:0})">全取红色</li>
-      <li v-on:click="$_setFnTitle('全取绿色');$_imgTranslate($_singleColor,{singleColor:1})">全取绿色</li>
-      <li v-on:click="$_setFnTitle('全取蓝色');$_imgTranslate($_singleColor,{singleColor:2})">全取蓝色</li>
-      <li v-on:click="$_setFnTitle('平滑处理');$_imgTranslate($_smooth)">平滑处理</li>
-      <li v-on:click="$_setFnTitle('霓虹处理');$_imgTranslate($_neon)">霓虹处理</li>
-      <li v-on:click="$_setFnTitle('浮雕处理');$_imgTranslate($_relief)">浮雕处理</li>
-      <li v-on:click="$_setFnTitle('镶嵌处理');$_imgTranslate($_inlay)">镶嵌处理</li>
-      <li v-on:click="$_setFnTitle('二值化-弱智127阈值');$_imgTranslate($_twoValued_Fixed)">二值化-弱智127阈值</li>
-      <li v-on:click="$_setFnTitle('二值化-平均值阈值');$_imgTranslate($_twoValued_AVG)">二值化-平均值阈值</li>
+      <li v-on:click="$_imgTranslate($_gray,{index:1})">灰度变换-浮点算法</li>
+      <!--<li v-on:click="$_imgTranslate($_gray,{index:2})">灰度变换-整数算法</li>
+      <li v-on:click="$_imgTranslate($_gray,{index:3})">灰度变换-移位算法</li>
+      <li v-on:click="$_imgTranslate($_gray,{index:4})">灰度变换-平均值算法</li>-->
+      <li v-on:click="$_imgTranslate($_reversal)">逆反处理</li>
+      <li v-on:click="$_imgTranslate($_singleColor,{singleColor:0})">全取红色</li>
+      <li v-on:click="$_imgTranslate($_singleColor,{singleColor:1})">全取绿色</li>
+      <li v-on:click="$_imgTranslate($_singleColor,{singleColor:2})">全取蓝色</li>
+      <li v-on:click="$_imgTranslate($_smooth)">平滑处理</li>
+      <li v-on:click="$_imgTranslate($_neon)">霓虹处理</li>
+      <li v-on:click="$_imgTranslate($_relief)">浮雕处理</li>
+      <li v-on:click="$_imgTranslate($_inlay)">镶嵌处理</li>
+      <li v-on:click="$_imgTranslate($_twoValued_Fixed)">二值化-固定127阈值</li>
+      <li v-on:click="$_imgTranslate($_twoValued_AVG)">二值化-平均值阈值</li>
     </ul>
     <br>
     <canvas class="canvasImg h-center" v-bind:width="canvasWidth" v-bind:height="canvasHeight" ref="eleCanvas"></canvas>
@@ -71,7 +71,7 @@ export default {
             if (files.length > 0) {
                 let file = files[0];
                 if (!(/^image\//).test(file.type)) {
-                    alert("请选择图像文件");
+                    self.$emit('smallTipShow',{text:'请选择图片文件'});
                     return;
                 }
                 let fr = new FileReader();
@@ -166,7 +166,12 @@ export default {
         },
         $_imgTranslate: function(fnProcess, fnParas) {
             var self = this;
-            if (!self.imgBase64 || typeof fnProcess != "function") {
+            if(!self.imgBase64){
+                self.$emit('smallTipShow',{text:'请先选择图片文件'});
+                return;
+            }
+            if (typeof fnProcess != "function") {
+                self.$emit('smallTipShow',{text:'请先选择图片文件'});
                 return;
             }
             if (!fnParas) {
@@ -201,6 +206,7 @@ export default {
             });
         },
         $_gray: function(paras) {
+            var self=this;
             if (!paras.imgData) {
                 return null;
             }
@@ -228,9 +234,22 @@ export default {
                 img256.data[i + 1] = gray;
                 img256.data[i + 2] = gray;
             }
+
+            if (!index || index == 1) {
+                self.$_setFnTitle('灰度变换-浮点算法');
+            } else if (index == 2) {
+                self.$_setFnTitle('灰度变换-整数算法');
+            } else if (index == 3) {
+                self.$_setFnTitle('灰度变换-移位算法');
+            } else if (index == 4) {
+                self.$_setFnTitle('灰度变换-平均值算法');
+            } else {
+                self.$_setFnTitle('灰度变换-仅取绿色');
+            }
             return img256;
         },
         $_reversal: function(paras) {
+            var self=this;
             if (!paras.imgData) {
                 return null;
             }
@@ -240,9 +259,11 @@ export default {
                 img256.data[i + 1] = 255 - img256.data[i + 1];
                 img256.data[i + 2] = 255 - img256.data[i + 2];
             }
+            self.$_setFnTitle('逆反处理');
             return img256;
         },
         $_singleColor: function(paras) {
+            var self=this;
             if (!paras.imgData) {
                 return null;
             }
@@ -256,6 +277,16 @@ export default {
                 img256.data[i] = 255 - img256.data[i + singleColor];
                 img256.data[i + 1] = 255 - img256.data[i + singleColor];
                 img256.data[i + 2] = 255 - img256.data[i + singleColor];
+            }
+
+            if(!paras.singleColor ||(paras.singleColor != 1 && paras.singleColor != 2)){
+                self.$_setFnTitle('全取红色');
+            }
+            else if(paras.singleColor == 1){
+                self.$_setFnTitle('全取绿色');
+            }
+            else if(paras.singleColor == 2){
+                self.$_setFnTitle('全取蓝色');
             }
             return img256;
         },
@@ -294,6 +325,7 @@ export default {
                 }
             }
             self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
+            self.$_setFnTitle('平滑处理');
             return img256;
         },
         $_neon: function(paras) {
@@ -309,114 +341,22 @@ export default {
             for (let i = 0; i < iRows; i++) {
                 for (let j = 0; j < iColumns; j++) {
                     if (i + 1 < iRows && j + 1 < iColumns) {
-                        newMatrix[i][j].R =
-                            2 *
-                            Math.sqrt(
-                                Math.pow(
-                                    matrixPixel[i][j].R -
-                                        matrixPixel[i][j + 1].R,
-                                    2
-                                ) +
-                                    Math.pow(
-                                        matrixPixel[i][j].R -
-                                            matrixPixel[i + 1][j].R,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].G =
-                            2 *
-                            Math.sqrt(
-                                Math.pow(
-                                    matrixPixel[i][j].G -
-                                        matrixPixel[i][j + 1].G,
-                                    2
-                                ) +
-                                    Math.pow(
-                                        matrixPixel[i][j].G -
-                                            matrixPixel[i + 1][j].G,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].B =
-                            2 *
-                            Math.sqrt(
-                                Math.pow(
-                                    matrixPixel[i][j].B -
-                                        matrixPixel[i][j + 1].B,
-                                    2
-                                ) +
-                                    Math.pow(
-                                        matrixPixel[i][j].B -
-                                            matrixPixel[i + 1][j].B,
-                                        2
-                                    )
-                            );
+                        newMatrix[i][j].R = 2 *Math.sqrt(Math.pow( matrixPixel[i][j].R - matrixPixel[i][j + 1].R, 2) + Math.pow( matrixPixel[i][j].R - matrixPixel[i + 1][j].R, 2));
+                        newMatrix[i][j].G = 2 * Math.sqrt(Math.pow(matrixPixel[i][j].G - matrixPixel[i][j + 1].G,2) + Math.pow(matrixPixel[i][j].G - matrixPixel[i + 1][j].G, 2));
+                        newMatrix[i][j].B = 2 *Math.sqrt(Math.pow(matrixPixel[i][j].B - matrixPixel[i][j + 1].B, 2) + Math.pow( matrixPixel[i][j].B - matrixPixel[i + 1][j].B,2));
                     } else if (i + 1 < iRows) {
-                        newMatrix[i][j].R =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].R -
-                                            matrixPixel[i + 1][j].R,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].G =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].G -
-                                            matrixPixel[i + 1][j].G,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].B =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].B -
-                                            matrixPixel[i + 1][j].B,
-                                        2
-                                    )
-                            );
+                        newMatrix[i][j].R = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].R - matrixPixel[i + 1][j].R, 2));
+                        newMatrix[i][j].G = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].G - matrixPixel[i + 1][j].G, 2));
+                        newMatrix[i][j].B = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].B - matrixPixel[i + 1][j].B, 2));
                     } else if (j + 1 < iColumns) {
-                        newMatrix[i][j].R =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].R -
-                                            matrixPixel[i][j + 1].R,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].G =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].G -
-                                            matrixPixel[i][j + 1].G,
-                                        2
-                                    )
-                            );
-                        newMatrix[i][j].B =
-                            2 *
-                            Math.sqrt(
-                                2 *
-                                    Math.pow(
-                                        matrixPixel[i][j].B -
-                                            matrixPixel[i][j + 1].B,
-                                        2
-                                    )
-                            );
+                        newMatrix[i][j].R = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].R - matrixPixel[i][j + 1].R, 2));
+                        newMatrix[i][j].G = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].G - matrixPixel[i][j + 1].G, 2));
+                        newMatrix[i][j].B = 2 * Math.sqrt(2 * Math.pow(matrixPixel[i][j].B - matrixPixel[i][j + 1].B, 2));
                     }
                 }
             }
             self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
+            self.$_setFnTitle('霓虹处理');
             return img256;
         },
         $_relief: function(paras) {
@@ -460,6 +400,7 @@ export default {
             }
             self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
             img256 = self.$_gray({ imgData: img256, index: 1 });
+            self.$_setFnTitle('浮雕处理');
             return img256;
         },
         $_inlay: function(paras) {
@@ -541,9 +482,11 @@ export default {
             }
             self.$_imgMatrixPixel2ArrData(newMatrix, img256.data);
             img256 = self.$_gray({ imgData: img256, index: 1 });
+            self.$_setFnTitle('镶嵌处理');
             return img256;
         },
         $_twoValued_Fixed: function(paras) {
+            var self=this;
             if (!paras.imgData) {
                 return null;
             }
@@ -561,10 +504,11 @@ export default {
                 img256.data[i + 1] = gray;
                 img256.data[i + 2] = gray;
             }
-
+            self.$_setFnTitle('二值化-固定127阈值');
             return img256;
         },
         $_twoValued_AVG: function(paras) {
+            var self=this;
             if (!paras.imgData) {
                 return null;
             }
@@ -593,15 +537,15 @@ export default {
                 img256.data[i + 1] = gray;
                 img256.data[i + 2] = gray;
             }
-
+            self.$_setFnTitle('二值化-平均值阈值');
             return img256;
         }
     }
 };
 </script>
 <style scoped>
-.divMax{
-    padding:10px 20px;
+.divMax {
+  padding: 10px 20px;
 }
 .sp {
   display: block;

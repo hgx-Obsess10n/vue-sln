@@ -4,7 +4,7 @@
 		v-on:click="$_globalClick()">
 		<span v-show="compShow" class="compTitle">{{compTitle}}</span>
 		<!--菜单ICON-->
-        <div v-bind:class="menuShow?'':'divMenuIconHidden'" class="divMenuIcon">
+        <div title="菜单" v-bind:class="menuShow?'':'divMenuIconHidden'" class="divMenuIcon">
             <img class="imgMenu" v-bind:src="menuShow?'/static/img/icon/menu-on.png':'/static/img/icon/menu-off.png'" v-on:click.stop="$_triggerMenuShow" alt="Menu">
         </div>
 		
@@ -16,6 +16,7 @@
             <router-link to="/Map" title="百度地图"><img src="/static/img/icon/baiduMap.png" alt="Map"></router-link>
 		</div>
 		<router-view class="routerView"
+            v-on:smallTipShow="$_callSmallTipShow"
 			v-on:CompInit="$_routerCompInit"
 			ref="eleRouterItem"> 
 		</router-view>
@@ -61,7 +62,20 @@ export default {
             ) {
                 this.$refs.eleRouterItem.$_parentGlobalClick();
             }
+        },
+        $_parentSmallTipCallBack:function(paras){
+            this.menuShow = false;
+            if (
+                this.$refs.eleRouterItem &&
+                this.$refs.eleRouterItem.$_parentSmallTipCallBack
+            ) {
+                this.$refs.eleRouterItem.$_parentSmallTipCallBack();
+            }
+        },
+        $_callSmallTipShow:function(paras){
+            this.$emit('smallTipShow',paras)
         }
+			
     },
     components: {}
 };
@@ -78,7 +92,7 @@ export default {
     position: fixed;
     z-index: 101;
     right: 10px;
-    top: 20px;
+    top: 15%;
     padding: 5px;
     border: 1px solid #777;
     border-radius: 20px;
@@ -97,7 +111,8 @@ export default {
     position: fixed;
     z-index: 101;
     right: 17px;
-    top: 66px;
+    top: 15%;
+    transform: translateY(45px);
     border: 1px #aaa;
     border-style: none none dotted none;
     box-shadow: 2px 2px 10px #aaa;
