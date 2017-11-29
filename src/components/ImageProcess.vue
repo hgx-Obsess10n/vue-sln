@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="divMax">
     <input type="file" style="display:none" v-on:change="$_changeFile" ref="eleIFile">
     <span class="sp h-center color1" v-on:click="$_chooseFile">选择图片</span>
-    <span class="sp h-center color1" v-on:click.stop="$_setFnListShow(true)">{{curFnTitle}}</span>
+    <span class="sp h-center color1" v-on:click.stop="$_setFnListShow()">{{curFnTitle}}</span>
     <ul v-show="fnListShow" class="fnList ul-nolist">
       <li v-on:click="$_setFnTitle('原图');$_showImg()">原图</li>
       <li v-on:click="$_setFnTitle('灰度变换-浮点算法');$_imgTranslate($_gray,{index:1})">灰度变换-浮点算法</li>
@@ -54,7 +54,12 @@ export default {
         },
         $_setFnListShow: function(bShow) {
             var self = this;
-            self.fnListShow = bShow;
+            if(bShow===undefined){
+                self.fnListShow=!self.fnListShow;
+            }
+            else{
+                self.fnListShow = bShow;
+            }
         },
         $_setFnTitle: function(text) {
             var self = this;
@@ -65,7 +70,7 @@ export default {
             let files = self.$refs.eleIFile.files;
             if (files.length > 0) {
                 let file = files[0];
-                if (!/^image\//.test(file.type)) {
+                if (!(/^image\//).test(file.type)) {
                     alert("请选择图像文件");
                     return;
                 }
@@ -326,9 +331,13 @@ export default {
                                         matrixPixel[i][j + 1].G,
                                     2
                                 ) +
-                                    Math.pow(matrixPixel[i][j].G - matrixPixel[i + 1][j].G, 2)
+                                    Math.pow(
+                                        matrixPixel[i][j].G -
+                                            matrixPixel[i + 1][j].G,
+                                        2
+                                    )
                             );
-                        newMatrix[i][j].B=
+                        newMatrix[i][j].B =
                             2 *
                             Math.sqrt(
                                 Math.pow(
@@ -591,45 +600,48 @@ export default {
 };
 </script>
 <style scoped>
+.divMax{
+    padding:10px 20px;
+}
 .sp {
-    display: block;
-    padding: 0 10px;
-    border: 1px solid #aaa;
-    line-height: 24px;
-    max-width: 200px;
-    width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-radius: 11px;
-    text-align: center;
-    cursor: pointer;
-    margin-top: 10px;
-    height: 26px;
+  display: block;
+  padding: 0 10px;
+  border: 1px solid #aaa;
+  line-height: 24px;
+  max-width: 200px;
+  width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 11px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 10px;
+  height: 26px;
 }
 
 .canvasImg {
-    display: block;
-    margin-top: 15px;
-    max-width: 70%;
-    max-height: 70%;
+  display: block;
+  margin-top: 15px;
+  max-width: 70%;
+  max-height: 70%;
 }
 .fnList {
-    position: absolute;
-    top: 73px;
-    width: 200px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: white;
-    border: 1px solid #aaa;
-    border-top: none;
-    border-radius: 10px;
+  position: absolute;
+  top: 82px;
+  width: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid #aaa;
+  border-top: none;
+  border-radius: 10px;
 }
 .fnList li {
-    text-align: center;
-    cursor: pointer;
+  text-align: center;
+  cursor: pointer;
 }
 .fnList li:hover {
-    background-color: rgb(255, 242, 184);
-    color: rgb(0, 136, 186);
+  background-color: rgb(255, 242, 184);
+  color: rgb(0, 136, 186);
 }
 </style>

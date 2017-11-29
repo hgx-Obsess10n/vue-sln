@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="divMax">
         <input type="text" placeholder="二维码内容" class="codeContent h-center" v-model="txtContent">
         <span class="sp color1 h-center" v-on:click="$_CreateQRCode()">生成</span>
         <div class="codeBox h-center" ref="divCode"></div>
@@ -42,6 +42,9 @@ export default {
 };
 </script>
 <style scoped>
+.divMax{
+    padding:10px 20px;
+}
 .codeContent {
     display: block;
     width:200px;
