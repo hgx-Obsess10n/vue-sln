@@ -6,10 +6,12 @@ import QRCode from '@/components/QRCode';
 import ImageProcess from '@/components/ImageProcess';
 import Map from '@/components/Map';
 import Index from '@/components/Index'
+import Welcome from '@/components/Welcome'
 
 Vue.use(Router);
 const routes = [
     {path:'/',name:'Index',component:Index,children:[
+        { path: '/', name: 'Welcome', component: Welcome },
         { path: '/Song', name: 'Song', component: Song },
         { path: '/ImageProcess', name: 'ImageProcess', component: ImageProcess },
         { path: '/QRCode', name: 'QRCode', component: QRCode },

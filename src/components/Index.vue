@@ -82,6 +82,7 @@ export default {
     padding: 5px;
     border: 1px solid #777;
     border-radius: 20px;
+    background-color: #fff;
     overflow: hidden;
 }
 .divMenuIconHidden{
@@ -100,6 +101,7 @@ export default {
     border: 1px #aaa;
     border-style: none none dotted none;
     box-shadow: 2px 2px 10px #aaa;
+    background-color: #fff;
 }
 .funcMenu > a {
     display: block;
