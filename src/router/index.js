@@ -10,13 +10,17 @@ import Welcome from '@/components/Welcome'
 
 Vue.use(Router);
 const routes = [
-    {path:'/',name:'Index',component:Index,children:[
-        { path: '/', name: 'Welcome', component: Welcome },
-        { path: '/Song', name: 'Song', component: Song },
-        { path: '/ImageProcess', name: 'ImageProcess', component: ImageProcess },
-        { path: '/QRCode', name: 'QRCode', component: QRCode },
-        { path: '/Card', name: 'Card', component: Card },
-        { path: '/Map', name: 'Map', component: Map }]
+    {
+        path:'/',
+        component:Index,
+        children:[
+            { path: '/', name: 'Welcome', component: Welcome },
+            { path: '/Song', name: 'Song', component: Song },
+            { path: '/ImageProcess', name: 'ImageProcess', component: ImageProcess },
+            { path: '/QRCode', name: 'QRCode', component: QRCode },
+            { path: '/Card', name: 'Card', component: Card },
+            { path: '/Map', name: 'Map', component: Map }
+        ]
     }
     
 ];
