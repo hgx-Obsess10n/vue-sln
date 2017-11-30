@@ -17,23 +17,18 @@ export default {
         return {
             searchKey:'',
             loc:{
-                address:'',
-                content:{
-                    address:'',
-                    address_detail:{
-                        province:'',
-                        city:'',
-                        city_code:-1,
-                        district:'',
-                        street:'',
-                        street_number:''
-                    },
-                    point:{
-                        x:'',
-                        y:''
-                    }
+                address_detail:{
+                    province:'',
+                    city:'',
+                    city_code:-1,
+                    district:'',
+                    street:'',
+                    street_number:''
                 },
-                status:-1
+                point:{
+                    lat:'',
+                    lng:''
+                }
             }
         };
     },
@@ -44,7 +39,6 @@ export default {
             title: '百度地图'
         };
         self.$emit('CompInit', data);
-        
         
     },
     mounted () {
@@ -70,8 +64,40 @@ export default {
                     ]}))   
             map.setCurrentCity('北京')          // 设置地图显示的城市 此项是必须设置的
             map.enableScrollWheelZoom(true)     // 开启鼠标滚轮缩放
+            self.$_location()
         },
         $_location:function(){
+            var self=this;
+            var geolocation = new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    self.loc={
+                        address_detail:{
+                            province:r.address.province,
+                            city:r.address.city,
+                            city_code:r.address.city_code,
+                            district:r.address.district,
+                            street:r.address.street,
+                            street_number:r.address.street_number
+                        },
+                        point:{
+                            lng:r.longitude,
+                            lat:r.latitude
+                        }
+                    };
+                    var mk = new BMap.Marker(r.point);
+                    map.addOverlay(mk);
+                    map.panTo(r.point);
+                    map.setZoom(17);
+                    //alert('您的位置：'+r.point.lng+','+r.point.lat);
+                }
+                else {
+                    alert('failed'+this.getStatus());
+                    self.$_locationByIP();
+                }        
+            },{enableHighAccuracy: true})
+        },
+        $_locationByIP:function(){
             var self=this;
             self.$jsonp('https://api.map.baidu.com/location/ip?ak=D8vIxM49PE7Dq9PYA5DZnzWMdwf1QPIX&coor=bd09ll',null,function(err,data){
                  if (err) {
@@ -79,30 +105,25 @@ export default {
                 } else {
                     if(data.status===0){
                         self.loc={
-                            address:data.address,
-                            content:{
-                                address:data.content.address,
-                                address_detail:{
-                                    province:data.content.address_detail.province,
-                                    city:data.content.address_detail.city,
-                                    city_code:data.content.address_detail.city_code,
-                                    district:data.content.address_detail.district,
-                                    street:data.content.address_detail.street,
-                                    street_number:data.content.address_detail.street_number
-                                },
-                                point:{
-                                    x:data.content.point.x,
-                                    y:data.content.point.y
-                                }
+                            address_detail:{
+                                province:data.content.address_detail.province,
+                                city:data.content.address_detail.city,
+                                city_code:data.content.address_detail.city_code,
+                                district:data.content.address_detail.district,
+                                street:data.content.address_detail.street,
+                                street_number:data.content.address_detail.street_number
                             },
-                            status:data.status
+                            point:{
+                                lng:data.content.point.x,
+                                lat:data.content.point.y
+                            }
                         };
                         if(map){
                             map.centerAndZoom(new BMap.Point(data.content.point.x, data.content.point.y), 11)
                         }
                     }
                 }
-            })
+            });
         },
         $_searchByKey:function(){
             var self=this;
