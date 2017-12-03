@@ -17,6 +17,7 @@
     "axios": "^0.16.2",
     "qrcodejs2": "0.0.2",
     "vue": "^2.4.2",
+    "vue-jsonp": "^0.1.7",
     "vue-router": "^2.7.0"
   },
   "devDependencies": {

@@ -1,4 +1,3 @@
-
 <template>
     
     <div id="indexCard" class="clearFix div-card-content">
@@ -45,7 +44,7 @@ export default {
     methods: {
         getCards: function() {
             var self = this;
-            this.$http.get('static/json/index-card.json').then(res => {
+            this.$axios.get('static/json/index-card.json').then(res => {
                 console.log('res', res);
                 if (res.status === 200) {
                     self.cards = res.data.list;

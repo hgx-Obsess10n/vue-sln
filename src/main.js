@@ -5,12 +5,16 @@ import App from './App'
 //import App from './Index';
 import router from './router';
 import axios from 'axios';
-import jsonp from 'jsonp';
+//import jsonp from 'jsonp';
+import VueJsonp from 'vue-jsonp'
+
 import './common.css';
 
+Vue.use(VueJsonp)
+
 Vue.config.productionTip = false;
-Vue.prototype.$http = axios;
-Vue.prototype.$jsonp = jsonp;
+Vue.prototype.$axios = axios;
+//Vue.prototype.$jsonp = jsonp;
 
 /* eslint-disable no-new */
 new Vue({
